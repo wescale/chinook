@@ -1,0 +1,1 @@
+kube_masters_number = 3

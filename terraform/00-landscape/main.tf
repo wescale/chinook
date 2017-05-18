@@ -134,41 +134,7 @@ resource "null_resource" "inventories" {
   }
 
   provisioner "local-exec" {
-    command = "echo '${data.template_file.inventory.rendered}' > ${path.module}/../inventories/bastions"
+    command = "echo '${data.template_file.inventory.rendered}' > ${path.module}/../../inventories/bastions"
   }
 
 }
-resource "aws_instance" "hidden" {
-
-  ami = "${data.aws_ami.debian.id}"
-  instance_type = "t2.micro"
-  key_name = "${aws_key_pair.bastion_keypair.key_name}"
-
-  subnet_id = "${module.zone_a.private_subnet_id}"
-
-  vpc_security_group_ids = [
-    "${aws_security_group.bastion_realm.id}"
-  ]
-
-  tags {
-    Name = "Hidden ${var.vpc_name}"
-  }
-}
-//
-//resource "aws_instance" "hidden_2" {
-//
-//  ami = "${data.aws_ami.debian.id}"
-//  instance_type = "t2.micro"
-//  key_name = "${aws_key_pair.bastion_keypair.key_name}"
-//
-//  subnet_id = "${module.zone_c.public_subnet_id}"
-//
-//  vpc_security_group_ids = [
-//    "${aws_security_group.bastion_realm.id}",
-//    "${aws_security_group.orgie.id}"
-//  ]
-//
-//  tags {
-//    Name = "exposed ${var.vpc_name}"
-//  }
-//}
