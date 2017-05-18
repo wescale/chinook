@@ -10,3 +10,5 @@ roles/seed
 .terraform
 *.tfstate.backup
 *.tfstate
+inventories/*
+ssh.cfg
