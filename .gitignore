@@ -7,3 +7,6 @@ group_vars/*
 keys/*
 secrets/*
 roles/seed
+.terraform
+*.tfstate.backup
+*.tfstate
