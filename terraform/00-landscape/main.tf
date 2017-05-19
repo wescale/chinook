@@ -125,6 +125,7 @@ data "template_file" "inventory" {
   }
 }
 
+#
 resource "null_resource" "inventories" {
 
   triggers {
@@ -138,3 +139,4 @@ resource "null_resource" "inventories" {
   }
 
 }
+

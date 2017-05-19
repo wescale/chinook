@@ -7,6 +7,13 @@ data "terraform_remote_state" "landscape" {
   }
 }
 
+data "terraform_remote_state" "rights" {
+  backend = "local"
+  config {
+    path = "${path.module}/../00-iam/terraform.tfstate"
+  }
+}
+
 data "aws_ami" "debian" {
   most_recent = true
 
@@ -45,6 +52,8 @@ resource "aws_launch_configuration" "kube_masters" {
     "${aws_security_group.temporary.id}"
   ]
 
+  iam_instance_profile = "${data.terraform_remote_state.rights.kube_masters_profile}"
+
   ebs_optimized = false
 
   user_data = <<EOF
@@ -53,6 +62,8 @@ runcmd:
   - 'wget https://raw.githubusercontent.com/aurelienmaury/ansible-role-seed/master/files/seed-debian-8.sh'
   - 'chmod u+x ./seed-debian-8.sh'
   - 'for i in 1 2 3 4 5; do ./seed-debian-8.sh && break || sleep 2; done'
+  - 'apt-get install -y curl'
+  - 'pip install awscli boto3'
 EOF
 
   lifecycle {
@@ -80,11 +91,18 @@ resource "aws_elb" "kube_masters" {
     lb_protocol       = "http"
   }
 
+  listener {
+    instance_port     = 4001
+    instance_protocol = "http"
+    lb_port           = 4001
+    lb_protocol       = "http"
+  }
+
   health_check {
     healthy_threshold = 2
-    unhealthy_threshold = 20
+    unhealthy_threshold = 10
     timeout = 3
-    target = "HTTP:8080/"
+    target = "HTTP:4001/"
     interval = 10
   }
 }
@@ -135,3 +153,4 @@ resource "aws_security_group" "temporary" {
     cidr_blocks     = ["0.0.0.0/0"]
   }
 }
+

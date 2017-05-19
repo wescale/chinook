@@ -1,0 +1,28 @@
+---
+- hosts: localhost
+  become: no
+  tasks:
+    - ec2_facts:
+
+    - ec2_remote_facts:
+        filters:
+          instance-id: "{{ ansible_ec2_instance_id }}"
+        region: "{{ ansible_ec2_placement_region }}"
+      register: ec2_detailed
+
+    - set_fact:
+        asg_name: "{{ ec2_detailed.instances[0].tags['aws:autoscaling:groupName'] }}"
+
+    - ec2_asg_facts:
+        name: "{{ asg_name }}"
+        region: "{{ ansible_ec2_placement_region }}"
+      register: asg_detailed
+
+    - ec2_remote_facts:
+        filters:
+          instance-id: "{{ asg_detailed.results[0].instances|map(attribute='instance_id')|list }}"
+        region: "{{ ansible_ec2_placement_region }}"
+      register: ec2_partners_detailed
+
+    - set_fact:
+        members: "{{ ec2_partners_detailed.instances|map(attribute='private_ip_address')|list }}"
