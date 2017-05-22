@@ -35,43 +35,6 @@ resource "aws_key_pair" "kube_masters_keypair" {
   public_key = "${var.kube_masters_default_public_key}"
 }
 
-resource "aws_launch_configuration" "kube_masters" {
-
-  name_prefix = "${data.terraform_remote_state.landscape.vpc}"
-
-  image_id = "${data.aws_ami.debian.id}"
-
-  instance_type = "t2.micro"
-
-  key_name = "${aws_key_pair.kube_masters_keypair.key_name}"
-
-  associate_public_ip_address = false
-
-  security_groups = [
-    "${data.terraform_remote_state.landscape.bastion_realm_sg}",
-    "${aws_security_group.temporary.id}"
-  ]
-
-  iam_instance_profile = "${data.terraform_remote_state.rights.kube_masters_profile}"
-
-  ebs_optimized = false
-
-  user_data = <<EOF
-#cloud-config
-runcmd:
-  - 'wget https://raw.githubusercontent.com/aurelienmaury/ansible-role-seed/master/files/seed-debian-8.sh'
-  - 'chmod u+x ./seed-debian-8.sh'
-  - 'for i in 1 2 3 4 5; do ./seed-debian-8.sh && break || sleep 2; done'
-  - 'apt-get install -y curl apache2'
-  - 'pip install awscli boto3'
-
-EOF
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
 resource "aws_elb" "kube_masters" {
   name = "${data.terraform_remote_state.landscape.vpc}-kube-masters"
 
@@ -80,6 +43,8 @@ resource "aws_elb" "kube_masters" {
   ]
 
   internal = false
+
+  instances = ["${aws_instance.kube_masters.*.id}"]
 
   security_groups = [
     "${aws_security_group.temporary.id}"
@@ -115,36 +80,44 @@ resource "aws_elb" "kube_masters" {
   }
 }
 
-resource "aws_autoscaling_group" "kube_masters" {
+resource "aws_instance" "kube_masters" {
 
-  name_prefix = "${data.terraform_remote_state.landscape.vpc}-kube-masters"
+  ami = "${data.aws_ami.debian.id}"
+  instance_type = "t2.micro"
 
-  min_size = "${var.kube_masters_number}"
-  max_size = "${var.kube_masters_number}"
-  desired_capacity = "${var.kube_masters_number}"
+  count = "${var.kube_masters_number}"
 
-  health_check_grace_period = 240
-  health_check_type = "ELB"
-  force_delete = true
+  key_name = "${aws_key_pair.kube_masters_keypair.key_name}"
 
-  load_balancers = [
-    "${aws_elb.kube_masters.id}"
+  associate_public_ip_address = false
+
+  subnet_id = "${element(
+      data.terraform_remote_state.landscape.private_subnet_list,
+      count.index % length(data.terraform_remote_state.landscape.private_subnet_list)
+    )}"
+
+  security_groups = [
+    "${data.terraform_remote_state.landscape.bastion_realm_sg}",
+    "${aws_security_group.temporary.id}"
   ]
 
-  vpc_zone_identifier = [
-    "${data.terraform_remote_state.landscape.private_subnet_list}"
-  ]
+  iam_instance_profile = "${data.terraform_remote_state.rights.kube_masters_profile}"
 
-  launch_configuration = "${aws_launch_configuration.kube_masters.name}"
+  ebs_optimized = false
 
-  lifecycle {
-    create_before_destroy = true
-  }
+  user_data = <<EOF
+#cloud-config
+runcmd:
+  - 'wget https://raw.githubusercontent.com/aurelienmaury/ansible-role-seed/master/files/seed-debian-8.sh'
+  - 'chmod u+x ./seed-debian-8.sh'
+  - 'for i in 1 2 3 4 5; do ./seed-debian-8.sh && break || sleep 2; done'
+  - 'apt-get install -y curl apache2'
+  - 'pip install awscli boto3'
 
-  tag {
-    key = "Name"
-    value = "${data.terraform_remote_state.landscape.vpc}-kube-master"
-    propagate_at_launch = true
+EOF
+
+  tags {
+    Name = "kube-master-${count.index}"
   }
 }
 
@@ -180,6 +153,24 @@ resource "aws_security_group" "temporary" {
     to_port         = 0
     protocol        = "-1"
     cidr_blocks     = ["0.0.0.0/0"]
+  }
+}
+
+data "template_file" "inventory" {
+  template = "${file("${path.module}/templates/inventory.tpl")}"
+
+  vars {
+    masters = "${join(",", aws_instance.kube_masters.*.private_ip)}"
+  }
+}
+
+resource "null_resource" "master_inventory" {
+  triggers {
+    masters = "${join(",", aws_instance.kube_masters.*.private_ip)}"
+  }
+
+  provisioner "local-exec" {
+    command = "echo '${data.template_file.inventory.rendered}' > ${path.module}/../../inventories/masters"
   }
 }
 
