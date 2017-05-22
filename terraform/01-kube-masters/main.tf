@@ -62,8 +62,9 @@ runcmd:
   - 'wget https://raw.githubusercontent.com/aurelienmaury/ansible-role-seed/master/files/seed-debian-8.sh'
   - 'chmod u+x ./seed-debian-8.sh'
   - 'for i in 1 2 3 4 5; do ./seed-debian-8.sh && break || sleep 2; done'
-  - 'apt-get install -y curl'
+  - 'apt-get install -y curl apache2'
   - 'pip install awscli boto3'
+
 EOF
 
   lifecycle {
@@ -75,10 +76,10 @@ resource "aws_elb" "kube_masters" {
   name = "${data.terraform_remote_state.landscape.vpc}-kube-masters"
 
   subnets = [
-    "${data.terraform_remote_state.landscape.private_subnet_list}"
+    "${data.terraform_remote_state.landscape.public_subnet_list}"
   ]
 
-  internal = true
+  internal = false
 
   security_groups = [
     "${aws_security_group.temporary.id}"
@@ -86,24 +87,31 @@ resource "aws_elb" "kube_masters" {
 
   listener {
     instance_port     = 8080
-    instance_protocol = "http"
+    instance_protocol = "tcp"
     lb_port           = 8080
-    lb_protocol       = "http"
+    lb_protocol       = "tcp"
+  }
+
+  listener {
+    instance_port     = 80
+    instance_protocol = "tcp"
+    lb_port           = 80
+    lb_protocol       = "tcp"
   }
 
   listener {
     instance_port     = 4001
-    instance_protocol = "http"
+    instance_protocol = "tcp"
     lb_port           = 4001
-    lb_protocol       = "http"
+    lb_protocol       = "tcp"
   }
 
   health_check {
     healthy_threshold = 2
     unhealthy_threshold = 10
     timeout = 3
-    target = "HTTP:4001/"
-    interval = 10
+    target = "TCP:80"
+    interval = 30
   }
 }
 
@@ -115,7 +123,7 @@ resource "aws_autoscaling_group" "kube_masters" {
   max_size = "${var.kube_masters_number}"
   desired_capacity = "${var.kube_masters_number}"
 
-  health_check_grace_period = 1200
+  health_check_grace_period = 240
   health_check_type = "ELB"
   force_delete = true
 
@@ -150,6 +158,27 @@ resource "aws_security_group" "temporary" {
     from_port = 8080
     to_port = 8080
     protocol = "TCP"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 4001
+    to_port = 4001
+    protocol = "TCP"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 80
+    to_port = 80
+    protocol = "TCP"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
     cidr_blocks     = ["0.0.0.0/0"]
   }
 }
