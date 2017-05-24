@@ -1,0 +1,20 @@
+---
+nomad_server_cache_dir: "/var/cache/run"
+
+nomad_server_version: "0.5.6"
+nomad_server_archive_sum: "3f5210f0bcddf04e2cc04b14a866df1614b71028863fe17bcdc8585488f8cb0c"
+
+nomad_server_url_prefix: "https://releases.hashicorp.com/nomad/{{ nomad_server_version }}"
+nomad_server_archive_name: "nomad_{{ nomad_server_version }}_linux_amd64.zip"
+nomad_server_archive_dest: "{{ nomad_server_cache_dir }}/{{ nomad_server_archive_name }}"
+nomad_server_archive_url: "{{ nomad_server_url_prefix }}/{{ nomad_server_archive_name }}"
+
+nomad_server_data_dir: "/var/lib/nomad"
+nomad_server_config_dir: "/etc/nomad.d"
+
+nomad_server_dc_name: "dc1"
+
+nomad_server_user_name: "nomad"
+nomad_server_user_id: "802"
+
+nomad_server_network_interface: eth0

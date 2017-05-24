@@ -1,0 +1,10 @@
+---
+- hosts: consul-servers-bootstrap
+  become: yes
+  roles:
+    - consul-server
+
+- hosts: nomad-servers-bootstrap
+  become: yes
+  roles:
+    - nomad-server

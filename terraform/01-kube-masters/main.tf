@@ -128,22 +128,29 @@ resource "aws_security_group" "temporary" {
   vpc_id = "${data.terraform_remote_state.landscape.vpc_id}"
 
   ingress {
-    from_port = 8080
-    to_port = 8080
+    from_port = 8300
+    to_port = 8302
     protocol = "TCP"
     cidr_blocks     = ["0.0.0.0/0"]
   }
 
   ingress {
-    from_port = 4001
-    to_port = 4001
+    from_port = 8500
+    to_port = 8500
     protocol = "TCP"
     cidr_blocks     = ["0.0.0.0/0"]
   }
 
   ingress {
-    from_port = 80
-    to_port = 80
+    from_port = 8600
+    to_port = 8600
+    protocol = "TCP"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 4646
+    to_port = 4648
     protocol = "TCP"
     cidr_blocks     = ["0.0.0.0/0"]
   }

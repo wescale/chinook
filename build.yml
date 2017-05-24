@@ -1,0 +1,27 @@
+- hosts: localhost
+  become: no
+  gather_facts: no
+
+  tasks:
+    - name: terraform plan
+      shell: >-
+        terraform get -update=true && terraform plan
+      args:
+        chdir: "{{ playbook_dir }}/terraform/{{ layer_name }}"
+      register: tf_plan
+
+    - pause:
+        prompt: |-
+          ############### READ CAREFULLY
+
+          {{ tf_plan.stdout }}
+
+          Type 'apply' if you want this to be done.
+      register: prompted
+
+    - name: terraform apply
+      shell: >-
+        terraform apply
+      args:
+        chdir: "{{ playbook_dir }}/terraform/{{ layer_name }}"
+      when: prompted.user_input == 'apply'

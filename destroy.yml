@@ -1,0 +1,50 @@
+- hosts: localhost
+  become: no
+  gather_facts: no
+
+  vars_prompt:
+    - name: "mfa_value"
+      prompt: "Enter your MFA value right now"
+      private: no
+
+  tasks:
+    - assert:
+        that:
+          - "{{ lookup('env', 'AWS_ACCESS_KEY_ID') != '' }}"
+          - "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') != '' }}"
+          - "{{ lookup('env', 'AWS_ACCOUNT_ID') != '' }}"
+          - "{{ lookup('env', 'AWS_DESIRED_ROLE') != '' }}"
+          - "{{ lookup('env', 'AWS_USERNAME') != '' }}"
+          - "{{ layer_num is defined }}"
+        msg: "Missing at least an environment var"
+
+    - set_fact:
+        aws_access: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+        aws_secret: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+        aws_account: "{{ lookup('env', 'AWS_ACCOUNT_ID') }}"
+        aws_role: "{{ lookup('env', 'AWS_DESIRED_ROLE') }}"
+        aws_user: "{{ lookup('env', 'AWS_USERNAME') }}"
+
+    - name: assume given role
+      sts_assume_role:
+        aws_access_key: "{{ aws_access }}"
+        aws_secret_key: "{{ aws_secret }}"
+        role_session_name: "{{ aws_role }}"
+        role_arn: "arn:aws:iam::{{ aws_account }}:role/{{ aws_role }}"
+        mfa_serial_number: "arn:aws:iam::{{ aws_account }}:mfa/{{ aws_user }}"
+        mfa_token: "{{ mfa_value }}"
+      register: assumed_role
+
+    - set_fact:
+        aws_work_env:
+          AWS_ACCESS_KEY_ID: "{{ assumed_role.sts_creds.access_key }}"
+          AWS_SECRET_ACCESS_KEY: "{{ assumed_role.sts_creds.secret_key }}"
+          AWS_SESSION_TOKEN: "{{ assumed_role.sts_creds.session_token }}"
+
+    - name: terraform plan
+      shell: >-
+        terraform get -update && terraform destroy -force
+      environment: "{{ aws_work_env }}"
+      args:
+        chdir: "{{ playbook_dir }}/layer-{{ layer_num }}"
+

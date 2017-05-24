@@ -1,0 +1,5 @@
+---
+- hosts: nomad-servers-bootstrap
+  become: yes
+  roles:
+    - nomad-server
