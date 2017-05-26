@@ -1,0 +1,43 @@
+---
+- hosts: localhost
+  become: no
+  gather_facts: no
+
+  pre_tasks:
+    - assert:
+        that:
+          - layer_name is defined
+        msg: >-
+          Please define 'layer_name' variable.
+
+  vars:
+    terraform_layers_root: "{{ playbook_dir }}/../terraform"
+    terraform_current_layer: "{{ terraform_layers_root }}/{{ layer_name }}"
+
+  tasks:
+    - name: terraform plan
+      shell: >-
+        terraform get -update=true
+        &&
+        terraform plan
+      args:
+        chdir: "{{ terraform_current_layer }}"
+      register: tf_plan
+
+    - pause:
+        prompt: |-
+          ############### READ CAREFULLY !!!
+
+          {{ tf_plan.stdout }}
+
+          ############### READ CAREFULLY !!!
+
+          Type 'apply' if you want this to be done.
+      register: prompted
+
+    - name: terraform apply
+      shell: >-
+        terraform apply
+      args:
+        chdir: "{{ terraform_current_layer }}"
+      when: prompted.user_input == 'apply'

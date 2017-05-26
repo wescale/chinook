@@ -1,0 +1,25 @@
+---
+- hosts: localhost
+  become: no
+  gather_facts: no
+
+  pre_tasks:
+    - assert:
+        that:
+          - layer_name is defined
+        msg: >-
+          Please define 'layer_name' variable.
+
+  vars:
+    terraform_layers_root: "{{ playbook_dir }}/../terraform"
+    terraform_current_layer: "{{ terraform_layers_root }}/{{ layer_name }}"
+
+  tasks:
+    - name: terraform destroy
+      shell: >-
+        terraform get -update
+        &&
+        terraform destroy -force
+      args:
+        chdir: "{{ terraform_current_layer }}"
+
