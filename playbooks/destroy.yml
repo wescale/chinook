@@ -10,16 +10,12 @@
         msg: >-
           Please define 'layer_name' variable.
 
-  vars:
-    terraform_layers_root: "{{ playbook_dir }}/../terraform"
-    terraform_current_layer: "{{ terraform_layers_root }}/{{ layer_name }}"
-
   tasks:
     - name: terraform destroy
       shell: >-
         terraform get -update
         &&
-        terraform destroy -force
+        terraform destroy {{ common_tf_vars }} -force
       args:
         chdir: "{{ terraform_current_layer }}"
 

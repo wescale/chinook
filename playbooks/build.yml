@@ -10,16 +10,12 @@
         msg: >-
           Please define 'layer_name' variable.
 
-  vars:
-    terraform_layers_root: "{{ playbook_dir }}/../terraform"
-    terraform_current_layer: "{{ terraform_layers_root }}/{{ layer_name }}"
-
   tasks:
     - name: terraform plan
       shell: >-
         terraform get -update=true
         &&
-        terraform plan
+        terraform plan {{ common_tf_vars }}
       args:
         chdir: "{{ terraform_current_layer }}"
       register: tf_plan
@@ -27,9 +23,7 @@
     - pause:
         prompt: |-
           ############### READ CAREFULLY !!!
-
           {{ tf_plan.stdout }}
-
           ############### READ CAREFULLY !!!
 
           Type 'apply' if you want this to be done.
@@ -37,7 +31,7 @@
 
     - name: terraform apply
       shell: >-
-        terraform apply
+        terraform apply {{ common_tf_vars }}
       args:
         chdir: "{{ terraform_current_layer }}"
       when: prompted.user_input == 'apply'

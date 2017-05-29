@@ -1,11 +1,11 @@
-resource "aws_iam_instance_profile" "kube_masters" {
+resource "aws_iam_instance_profile" "masters" {
 
-  name = "${var.vpc_name}-kube-masters-instance-profile"
-  role = "${aws_iam_role.kube_masters.name}"
+  name = "${var.project_name}-masters-instance-profile"
+  role = "${aws_iam_role.masters.name}"
 }
 
-resource "aws_iam_role" "kube_masters" {
-  name = "${var.vpc_name}-kube-masters-role"
+resource "aws_iam_role" "masters" {
+  name = "${var.project_name}-masters-role"
   path = "/"
 
   assume_role_policy = <<EOF
@@ -26,10 +26,10 @@ EOF
 }
 
 
-resource "aws_iam_role_policy" "kube_masters" {
-  name_prefix = "${var.vpc_name}_kube_masters"
+resource "aws_iam_role_policy" "masters" {
+  name_prefix = "${var.project_name}_masters"
 
-  role = "${aws_iam_role.kube_masters.id}"
+  role = "${aws_iam_role.masters.id}"
 
   policy = <<EOF
 {

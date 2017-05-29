@@ -1,5 +1,3 @@
-vpc_name = "kubic-aws"
-
 vpc_cidr = "10.42.0.0/16"
 
 public_subnet_cidr_a = "10.42.10.0/24"
