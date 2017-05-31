@@ -1,6 +1,6 @@
 {% set comma = joiner(",") %}
 {
-    "server": true,
+    "server": {{ (consul_mode == 'server')|lower }},
     "datacenter": "{{ consul_dc_name }}",
     "data_dir": "{{ consul_data_dir }}",
     "log_level": "INFO",

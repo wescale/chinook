@@ -18,3 +18,5 @@ consul_user_name: "consul"
 consul_user_id: "801"
 
 consul_network_interface: eth0
+
+consul_mode: "node"

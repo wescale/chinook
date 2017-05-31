@@ -1,0 +1,20 @@
+---
+- hosts: all
+  become: yes
+  tags:
+    - agents
+  roles:
+    - consul-agent
+    - prometheus-node
+
+- hosts: nomad-servers-bootstrap
+  become: yes
+  roles:
+    - nomad-server
+
+- hosts: monitor
+  become: yes
+
+  roles:
+    - prometheus-master
+    - grafana

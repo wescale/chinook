@@ -19,13 +19,13 @@ resource "aws_elb" "masters" {
   ]
 
   security_groups = [
-    "${aws_security_group.masters.id}"
+    "${data.terraform_remote_state.landscape.common_sg}"
   ]
 
   listener {
-    instance_port     = 8300
+    instance_port     = 8500
     instance_protocol = "tcp"
-    lb_port           = 8300
+    lb_port           = 8500
     lb_protocol       = "tcp"
   }
 
@@ -33,7 +33,7 @@ resource "aws_elb" "masters" {
     healthy_threshold = 2
     unhealthy_threshold = 10
     timeout = 3
-    target = "TCP:8300"
+    target = "TCP:8500"
     interval = 30
   }
 }
@@ -59,7 +59,7 @@ resource "aws_instance" "masters" {
 
   security_groups = [
     "${data.terraform_remote_state.landscape.bastion_realm_sg}",
-    "${aws_security_group.masters.id}"
+    "${data.terraform_remote_state.landscape.common_sg}"
   ]
 
   iam_instance_profile = "${data.terraform_remote_state.rights.masters_profile}"
@@ -77,47 +77,5 @@ EOF
 
   tags {
     Name = "${var.project_name}-${var.project_region}-master-${count.index}"
-  }
-}
-
-resource "aws_security_group" "masters" {
-
-  name_prefix = "${var.project_name}-${var.project_region}-masters"
-
-  vpc_id = "${data.terraform_remote_state.landscape.vpc_id}"
-
-  ingress {
-    from_port = 8300
-    to_port = 8302
-    protocol = "TCP"
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port = 8500
-    to_port = 8500
-    protocol = "TCP"
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port = 8600
-    to_port = 8600
-    protocol = "TCP"
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port = 4646
-    to_port = 4648
-    protocol = "TCP"
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    cidr_blocks     = ["0.0.0.0/0"]
   }
 }

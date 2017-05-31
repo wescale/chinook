@@ -67,3 +67,7 @@ output "private_subnet_cidr_c" {
 output "bastion_c" {
   value = "${module.zone_c.bastion_ip}"
 }
+
+output "common_sg" {
+  value = "${aws_security_group.server.id}"
+}

@@ -15,7 +15,7 @@
       shell: >-
         terraform get -update=true
         &&
-        terraform plan {{ common_tf_vars }}
+        terraform plan {{ common_tf_vars }} -lock=false
       args:
         chdir: "{{ terraform_current_layer }}"
       register: tf_plan
@@ -40,7 +40,7 @@
 
     - name: terraform apply
       shell: >-
-        terraform apply {{ common_tf_vars }}
+        terraform apply {{ common_tf_vars }} -lock=false
       args:
         chdir: "{{ terraform_current_layer }}"
       tags:

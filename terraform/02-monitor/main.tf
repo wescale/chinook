@@ -23,7 +23,8 @@ resource "aws_instance" "monitor" {
   }"
 
   security_groups = [
-    "${data.terraform_remote_state.landscape.bastion_realm_sg}"
+    "${data.terraform_remote_state.landscape.bastion_realm_sg}",
+    "${data.terraform_remote_state.landscape.common_sg}"
   ]
 
   iam_instance_profile = "${data.terraform_remote_state.rights.masters_profile}"

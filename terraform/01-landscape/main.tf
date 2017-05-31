@@ -43,6 +43,9 @@ module "zone_a" {
   private_subnet_cidr = "${var.private_subnet_cidr_a}"
   public_gateway_route_table_id = "${aws_route_table.main.id}"
   bastion_default_public_key = "${var.bastion_default_public_key}"
+  bastion_security_group_id_list = [
+    "${aws_security_group.server.id}"
+  ]
 }
 
 module "zone_b" {
@@ -54,6 +57,9 @@ module "zone_b" {
   private_subnet_cidr = "${var.private_subnet_cidr_b}"
   public_gateway_route_table_id = "${aws_route_table.main.id}"
   bastion_default_public_key = "${var.bastion_default_public_key}"
+  bastion_security_group_id_list = [
+    "${aws_security_group.server.id}"
+  ]
 }
 
 module "zone_c" {
@@ -65,6 +71,9 @@ module "zone_c" {
   private_subnet_cidr = "${var.private_subnet_cidr_c}"
   public_gateway_route_table_id = "${aws_route_table.main.id}"
   bastion_default_public_key = "${var.bastion_default_public_key}"
+  bastion_security_group_id_list = [
+    "${aws_security_group.server.id}"
+  ]
 }
 
 resource "aws_security_group" "bastion_realm" {
@@ -82,6 +91,49 @@ resource "aws_security_group" "bastion_realm" {
       "${module.zone_b.bastion_sg}",
       "${module.zone_c.bastion_sg}"
     ]
+  }
+
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+}
+
+
+resource "aws_security_group" "server" {
+
+  name_prefix = "${var.project_name}-${var.project_region}-server"
+
+  vpc_id = "${aws_vpc.vpc.id}"
+
+  ingress {
+    from_port = 8300
+    to_port = 8302
+    protocol = "TCP"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 8500
+    to_port = 8500
+    protocol = "TCP"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 8600
+    to_port = 8600
+    protocol = "TCP"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 4646
+    to_port = 4648
+    protocol = "TCP"
+    cidr_blocks     = ["0.0.0.0/0"]
   }
 
   egress {

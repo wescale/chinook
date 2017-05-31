@@ -62,7 +62,7 @@
 
 - name: generate default variables
   template:
-    src: "env.j2"
+    src: "env.{{ consul_mode }}.j2"
     dest: "/etc/default/consul"
     group: "{{ consul_user_name }}"
     mode: "0640"
@@ -78,7 +78,7 @@
 
 - name: generate systemd service
   template:
-    src: "consul.service.j2"
+    src: "consul.service.{{ consul_mode }}.j2"
     dest: "/etc/systemd/system/consul.service"
     mode: "0640"
   notify: restart consul
