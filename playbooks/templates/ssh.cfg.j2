@@ -1,0 +1,10 @@
+Host *
+  User {{ default_user }}
+  IdentityFile {{ default_local_private_key_file }}
+
+{% for cidr_bastion in tfoutput_cidr_to_tfoutput_bastion.items() %}
+Host {{ tf_outputs[cidr_bastion[0]].value | regex_replace('(\.0)+\/[1-9]{2}','.*') }}
+  StrictHostKeyChecking no
+  ProxyCommand ssh -t -F ./ssh.cfg -W %h:%p {{ tf_outputs[cidr_bastion[1]].value }}
+
+{% endfor %}

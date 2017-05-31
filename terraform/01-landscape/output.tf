@@ -24,28 +24,46 @@ output "bastion_realm_sg" {
   value = "${aws_security_group.bastion_realm.id}"
 }
 
-# =============================================================================
-
-data "template_file" "inventory" {
-  template = "${file("${path.module}/templates/inventory.tpl")}"
-
-  vars {
-    bastion_a = "${module.zone_a.bastion_ip}"
-    bastion_b = "${module.zone_b.bastion_ip}"
-    bastion_c = "${module.zone_c.bastion_ip}"
-  }
+output bastions_ip_list {
+  value = [
+    "${module.zone_a.bastion_ip}",
+    "${module.zone_b.bastion_ip}",
+    "${module.zone_c.bastion_ip}"
+  ]
 }
 
-resource "null_resource" "inventories" {
+output "public_subnet_cidr_a" {
+  value = "${var.public_subnet_cidr_a}"
+}
 
-  triggers {
-    bastion_a = "${module.zone_a.bastion_ip}"
-    bastion_b = "${module.zone_b.bastion_ip}"
-    bastion_c = "${module.zone_c.bastion_ip}"
-  }
+output "private_subnet_cidr_a" {
+  value = "${var.private_subnet_cidr_a}"
+}
 
-  provisioner "local-exec" {
-    command = "echo '${data.template_file.inventory.rendered}' > ${path.module}/../../inventories/bastions"
-  }
+output "bastion_a" {
+  value = "${module.zone_a.bastion_ip}"
+}
 
+output "public_subnet_cidr_b" {
+  value = "${var.public_subnet_cidr_b}"
+}
+
+output "private_subnet_cidr_b" {
+  value = "${var.private_subnet_cidr_b}"
+}
+
+output "bastion_b" {
+  value = "${module.zone_b.bastion_ip}"
+}
+
+output "public_subnet_cidr_c" {
+  value = "${var.public_subnet_cidr_c}"
+}
+
+output "private_subnet_cidr_c" {
+  value = "${var.private_subnet_cidr_c}"
+}
+
+output "bastion_c" {
+  value = "${module.zone_c.bastion_ip}"
 }

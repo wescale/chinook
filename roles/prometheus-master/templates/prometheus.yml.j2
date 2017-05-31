@@ -1,0 +1,28 @@
+---
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+
+  external_labels:
+      monitor: 'prometheus-demo'
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first.rules"
+  # - "second.rules"
+
+scrape_configs:
+  - job_name: 'self'
+    static_configs:
+      - targets:
+        - 'localhost:9100'
+{% if prometheus_node_list %}
+  - job_name: 'nodes'
+    static_configs:
+      - targets:
+{% for node in prometheus_node_list %}
+          - '{{ node }}:9100'
+{% endfor %}
+      - labels:
+          type: node
+{% endif %}

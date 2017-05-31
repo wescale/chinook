@@ -19,6 +19,8 @@
       args:
         chdir: "{{ terraform_current_layer }}"
       register: tf_plan
+      tags:
+        - terraform
 
     - pause:
         prompt: |-
@@ -28,6 +30,8 @@
 
           Type 'apply' if you want this to be done.
       register: prompted
+      tags:
+        - terraform
 
     - name: terraform apply
       shell: >-
@@ -35,3 +39,12 @@
       args:
         chdir: "{{ terraform_current_layer }}"
       when: prompted.user_input == 'apply'
+      tags:
+        - terraform
+
+    - stat:
+        path: "{{ terraform_current_layer }}/inventory-map.yml"
+      register: inventory_map
+
+    - include: "{{ playbook_dir }}/inc/generate_tf_layer_inventory.yml"
+      when: inventory_map.stat.exists

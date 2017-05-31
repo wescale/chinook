@@ -1,0 +1,16 @@
+##
+# Generated inventory for Terraform layer {{ layer_name }}
+##
+
+{% for group_output_tuple in ansible_groups_to_tf_output.items() %}
+[{{ group_output_tuple[0] }}]
+{% for single_host in tf_outputs[group_output_tuple[1]].value %}
+{{ group_output_tuple[0] }}_{{ loop.index0 }} ansible_host={{ single_host }}
+{% endfor %}
+
+{% endfor %}
+
+[{{ clean_layer_name}}:children]
+{% for group_name in ansible_groups_to_tf_output.keys() %}
+{{ group_name }}
+{% endfor %}

@@ -1,0 +1,11 @@
+---
+ansible_groups_to_tf_output:
+  bastions: bastions_ip_list
+
+tfoutput_cidr_to_tfoutput_bastion:
+  public_subnet_cidr_a: bastion_a
+  private_subnet_cidr_a: bastion_a
+  public_subnet_cidr_b: bastion_b
+  private_subnet_cidr_b: bastion_b
+  public_subnet_cidr_c: bastion_c
+  private_subnet_cidr_c: bastion_c

@@ -1,0 +1,13 @@
+---
+grafana_unarchive_dir: "/opt"
+grafana_deploy_dir: "{{ grafana_unarchive_dir }}/grafana"
+grafana_archive_name: "grafana-{{ grafana_version }}.linux-x64.tar.gz"
+grafana_release_url: "https://grafanarel.s3.amazonaws.com/builds"
+grafana_archive_url: "{{ grafana_release_url }}/{{ grafana_archive_name }}"
+
+grafana_unarchive_creates: "{{ grafana_unarchive_dir }}/grafana-{{ grafana_version }}"
+
+grafana_archive_sum:
+  4.1.2-1486989747: "b8111cd014e9c202dd1b168b924731a140161e9e43e32f3ca7ae18db850af6c4"
+
+grafana_user: "grafana"
