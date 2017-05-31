@@ -1,2 +1,0 @@
-[monitor]
-${replace(monitor,",", "\n")}

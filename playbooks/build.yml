@@ -33,18 +33,24 @@
       tags:
         - terraform
 
+    - meta: end_play
+      when: prompted is defined and prompted.user_input != 'apply'
+      tags:
+        - terraform
+
     - name: terraform apply
       shell: >-
         terraform apply {{ common_tf_vars }}
       args:
         chdir: "{{ terraform_current_layer }}"
-      when: prompted.user_input == 'apply'
       tags:
         - terraform
 
-    - stat:
+    - name: checking for var file to generate inventory
+      stat:
         path: "{{ terraform_current_layer }}/inventory-map.yml"
       register: inventory_map
 
-    - include: "{{ playbook_dir }}/inc/generate_tf_layer_inventory.yml"
+    - name: generating local inventory
+      include: "{{ playbook_dir }}/inc/generate_tf_layer_inventory.yml"
       when: inventory_map.stat.exists

@@ -1,5 +1,5 @@
 Host *
-  User {{ default_user }}
+  User {{ ansible_user }}
   IdentityFile {{ default_local_private_key_file }}
 
 {% for cidr_bastion in tfoutput_cidr_to_tfoutput_bastion.items() %}

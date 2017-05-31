@@ -1,0 +1,10 @@
+---
+ansible_groups_to_tf_output:
+  masters: masters_instances
+
+inventory_raw_block: |-
+  [consul-servers-bootstrap:children]
+  masters
+
+  [nomad-servers-bootstrap:children]
+  masters

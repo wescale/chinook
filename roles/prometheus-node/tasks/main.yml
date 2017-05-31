@@ -30,12 +30,12 @@
 
 - template:
     src: node_exporter.service.j2
-    dest: /usr/lib/systemd/system/node_exporter.service
+    dest: /lib/systemd/system/node_exporter.service
   register: node_exporter_service
 
 - shell: >
     systemctl daemon-reload
-  when: "{{ node_exporter_service|changed }}"
+  when: node_exporter_service|changed
   notify: restart node_exporter
 
 - service:

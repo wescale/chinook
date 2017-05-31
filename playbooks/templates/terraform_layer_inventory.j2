@@ -9,8 +9,4 @@
 {% endfor %}
 
 {% endfor %}
-
-[{{ clean_layer_name}}:children]
-{% for group_name in ansible_groups_to_tf_output.keys() %}
-{{ group_name }}
-{% endfor %}
+{{ inventory_raw_block|default('') }}

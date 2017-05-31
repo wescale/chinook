@@ -1,24 +1,30 @@
 ---
-- set_fact:
+- name: variable rebranding
+  set_fact:
     clean_layer_name: "{{ layer_name|regex_replace('^[0-9]{2}-', '') }}"
 
-- include_vars:
+- name: including terraform layer var file
+  include_vars:
     file: "{{ terraform_current_layer }}/inventory-map.yml"
 
-- shell: >-
+- name: getting raw terraform outputs
+  shell: >-
     terraform output -json
   args:
     chdir: "{{ terraform_current_layer }}"
   register: raw_tf_outputs
 
-- set_fact:
+- name: parsing terraform outputs
+  set_fact:
     tf_outputs: "{{ raw_tf_outputs.stdout|from_json }}"
 
-- template:
+- name: generating ansible host inventory
+  template:
     src: "{{ playbook_dir }}/templates/terraform_layer_inventory.j2"
     dest: "{{ inventory_dir }}/{{ clean_layer_name }}.inventory"
 
-- template:
+- name: generating ssh project configuration
+  template:
     src: "{{ playbook_dir }}/templates/ssh.cfg.j2"
     dest: "{{ inventory_dir }}/../ssh.cfg"
   when: tfoutput_cidr_to_tfoutput_bastion is defined

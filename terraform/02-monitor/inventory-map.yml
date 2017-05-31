@@ -1,0 +1,3 @@
+---
+ansible_groups_to_tf_output:
+  monitor: monitor_instances

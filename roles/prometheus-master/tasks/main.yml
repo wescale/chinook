@@ -11,7 +11,7 @@
 
 - get_url:
     url: "{{ prometheus_archive_url }}"
-    dest: "{{ prometheus_cache_dir }}/{{ prometheus_archive_name }}"
+    dest: "{{ ansible_cache_dir }}/{{ prometheus_archive_name }}"
     sha256sum: "{{ prometheus_archive_sum[prometheus_version] }}"
 
 - unarchive:
@@ -31,12 +31,12 @@
 
 - template:
     src: prometheus.service.j2
-    dest: /usr/lib/systemd/system/prometheus.service
+    dest: /lib/systemd/system/prometheus.service
   register: prometheus_service
 
 - shell: >
     systemctl daemon-reload
-  when: "{{ prometheus_service|changed }}"
+  when: prometheus_service|changed
   notify: restart prometheus
 
 - template:

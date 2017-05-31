@@ -9,5 +9,6 @@ prometheus_unarchive_creates: "{{ prometheus_unarchive_dir }}/prometheus-{{ prom
 
 prometheus_archive_sum:
   1.5.2: "971c5f365c3f53f52d05729acf43962905832b33d740798094850a25645de5ae"
+  1.6.3: "bb4e3bf4c9cd2b30fc922e48ab584845739ed4aa50dea717ac76a56951e31b98"
 
 prometheus_user: "prometheus"

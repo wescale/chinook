@@ -7,5 +7,6 @@ node_exporter_archive_url: "{{ node_exporter_release_url }}/v{{ node_exporter_ve
 
 node_exporter_archive_sum:
   0.13.0: "2de5d1e51330c41588ed4c88bc531a3d2dccf6b4d7b99d5782d95cff27a3c049"
+  0.14.0: "d5980bf5d0dc7214741b65d3771f08e6f8311c86531ae21c6ffec1d643549b2e"
 
 node_exporter_user: "node_exporter"

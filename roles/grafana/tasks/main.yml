@@ -39,7 +39,7 @@
 
 - template:
     src: "grafana.service.j2"
-    dest: "/usr/lib/systemd/system/grafana.service"
+    dest: "/lib/systemd/system/grafana.service"
   register: grafana_service
 
 - shell: >

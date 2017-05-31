@@ -1,5 +1,4 @@
 ---
 ansible_cache_dir: "/tmp"
 
-prometheus_version: "1.5.2"
-prometheus_cache_dir: "/var/cache/{{ ansible_user }}"
+prometheus_version: "1.6.3"
