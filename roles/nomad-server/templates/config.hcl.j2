@@ -15,13 +15,19 @@ advertise {
 server {
   enabled          = true
   bootstrap_expect = {{ groups['nomad-servers-bootstrap']|length }}
-  start_join = [
+  start_join       = [
   {%- for host in groups['nomad-servers-bootstrap'] -%}
   {{ comma() }}"{{ hostvars[host]['ansible_'+nomad_server_network_interface]['ipv4']['address'] }}"
   {%- endfor -%}
   ]
 }
 
+telemetry {
+  # publish_allocation_metrics = true
+  publish_node_metrics = true
+  statsd_address       = "localhost:8125"
+}
+
 consul {
-  address = "127.0.0.1:8500"
+  address = "localhost:8500"
 }
