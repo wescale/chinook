@@ -19,3 +19,9 @@
     - nomad-server
     - prometheus-statsd
 
+- hosts: nomad-servers-bootstrap
+  become: yes
+  tags:
+    - statsd
+  roles:
+    - prometheus-statsd
