@@ -7,14 +7,15 @@
     - consul-agent
     - prometheus-node
 
+- hosts: monitor
+  become: yes
+  roles:
+    - prometheus-master
+    - grafana
+
 - hosts: nomad-servers-bootstrap
   become: yes
   roles:
     - nomad-server
+    - prometheus-statsd
 
-- hosts: monitor
-  become: yes
-
-  roles:
-    - prometheus-master
-    - grafana
