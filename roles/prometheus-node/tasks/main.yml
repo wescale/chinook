@@ -33,6 +33,11 @@
     dest: /lib/systemd/system/node_exporter.service
   register: node_exporter_service
 
+- template:
+    src: consul.service.json.j2
+    dest: /etc/consul.d/node_exporter.json
+  notify: restart consul
+
 - shell: >
     systemctl daemon-reload
   when: node_exporter_service|changed
@@ -56,3 +61,5 @@
     owner: "{{ node_exporter_user }}"
     group: "{{ node_exporter_user }}"
   notify: restart node_exporter
+
+- meta: flush_handlers

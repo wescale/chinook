@@ -4,7 +4,7 @@ global:
   evaluation_interval: 15s
 
   external_labels:
-      monitor: 'prometheus-demo'
+    monitor: 'prometheus-master'
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
@@ -12,17 +12,12 @@ rule_files:
   # - "second.rules"
 
 scrape_configs:
-  - job_name: 'self'
-    static_configs:
-      - targets:
-        - 'localhost:9100'
-{% if prometheus_node_list is defined %}
-  - job_name: 'nodes'
-    static_configs:
-      - targets:
-{% for node in prometheus_node_list %}
-          - '{{ node }}:9100'
-{% endfor %}
-      - labels:
-          type: node
-{% endif %}
+  - job_name: consul
+    consul_sd_configs:
+      - server: 'localhost:8500'
+    relabel_configs:
+      - source_labels: [__meta_consul_tags]
+        regex: .*,monitor,.*
+        action: keep
+      - source_labels: [__meta_consul_service]
+        target_label: job

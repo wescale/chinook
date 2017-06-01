@@ -15,7 +15,7 @@
       shell: >-
         terraform get -update
         &&
-        terraform destroy {{ common_tf_vars }} -force
+        terraform destroy {{ common_tf_vars }} -force -lock=false
       args:
         chdir: "{{ terraform_current_layer }}"
 
