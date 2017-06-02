@@ -1,0 +1,27 @@
+{% set comma = joiner(",") %}
+
+bind_addr = "0.0.0.0"
+
+data_dir  = "{{ nomad_worker_data_dir }}"
+
+datacenter = "{{ nomad_worker_dc_name }}"
+
+advertise {
+  http = "{{ ansible_default_ipv4.address }}"
+  rpc  = "{{ ansible_default_ipv4.address }}"
+  serf = "{{ ansible_default_ipv4.address }}"
+}
+
+client {
+  enabled       = true
+}
+
+telemetry {
+  # publish_allocation_metrics = true
+  publish_node_metrics = true
+  statsd_address       = "localhost:9125"
+}
+
+consul {
+  address = "localhost:8500"
+}

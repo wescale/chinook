@@ -1,0 +1,7 @@
+---
+ansible_groups_to_tf_output:
+  workers: workers_instances
+
+inventory_raw_block: |-
+  [nomad-workers:children]
+  workers

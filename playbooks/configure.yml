@@ -25,3 +25,11 @@
     - statsd
   roles:
     - prometheus-statsd
+
+- hosts: nomad-workers
+  become: yes
+  tags:
+    - nomad
+  roles:
+    - nomad-worker
+    - prometheus-statsd
