@@ -1,26 +1,40 @@
-# Ansible Starter Kit
+# Chinook
 
-This repository is aimed at starting fast and effective with ansible.
+Layered Terraform & Ansible toolbox to setup a prod-ready Nomad cluster in AWS.
 
-* Fill the `hosts` file with you groups and hosts.
-* Modify the `ssh.cfg` config file to fit your needs.
-* Write new playbooks in `playbooks` directory.
-* Operate from the project root so that `ansible.cfg` and `ssh.cfg` are 
-taken into account by all ansible commands.
-* Run `ansible all -m ping`: if you get `pong` response from all hosts, you are
-ready to operate.
-* Run `ansible-galaxy install -fr ansible-requirements.yml` to install additional roles.
+## Getting started
 
+* Fill the file `inventories/host_vars/localhost.yml` to point a private key file and a public key file:
 
-# References
+```
+default_local_private_key_file: "/absolute/path/to/private_key_file"
+default_local_public_key_file: "/absolute/path/to/public_key_file"
+```
 
-Here are some project that will give you examples of advanced usages of Ansible:
+* Fill your env vars to allow Terraform to authenticate to AWS.
+* Then deploy infrastructure, layer by layer:
 
-* [DebOps project](https://github.com/debops)
-* [Galaxie project](https://github.com/Tuuux/galaxie)
+```
+ansible-playbook playbooks/deploy-tf-layer.yml -e layer_name=00-access-rights
+ansible-playbook playbooks/deploy-tf-layer.yml -e layer_name=01-landscape
+ansible-playbook playbooks/deploy-tf-layer.yml -e layer_name=02-monitor
+ansible-playbook playbooks/deploy-tf-layer.yml -e layer_name=03-masters
+ansible-playbook playbooks/deploy-tf-layer.yml -e layer_name=04-workers
+```
 
-Some slidedecks to enlight you:
+* Wait a couple of minutes for all hosts to start and execute their cloudinit scripts.
+* At last, let Ansible do its job:
 
-* [FR - Ansible hors des sentiers battus](https://speakerdeck.com/aurelienmaury/ansible-hors-des-sentiers-battus)
+```
+ansible-playbook playbooks/configure.yml
+```
+
+## Use it
+
+For now, all ips are stated in `inventories/*.inventory`. Landscape holds bastion hosts. 
+Monitor holds Prometheus and Grafana.
+Masters hold Consul and Nomad Server. Workers hold Nomad nodes.
+
+For now, to reach services, you need to forward remote ports locally via ssh.
 
 Have fun. Hack in peace.

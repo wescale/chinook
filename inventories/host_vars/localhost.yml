@@ -1,8 +1,10 @@
 ---
 default_local_private_key_file: "/Users/amaury/.ssh/id_rsa.kouignamann"
+default_local_public_key_file: "/Users/amaury/.ssh/id_rsa.kouignamann.pub"
 
 common_tf_vars: >-
   -var project_name={{ project_name }}
   -var project_region={{ project_region }}
+  -var public_key_path={{ default_local_public_key_file }}
 
 terraform_current_layer: "{{ playbook_dir }}/../terraform/{{ layer_name }}"

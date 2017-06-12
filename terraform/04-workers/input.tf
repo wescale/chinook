@@ -3,7 +3,8 @@
 variable "project_name" {}
 variable "project_region" {}
 
-variable "workers_default_public_key" {}
+variable "public_key_path" {}
+
 variable "workers_number" {}
 
 # =============================================================================

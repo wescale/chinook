@@ -1,0 +1,10 @@
+---
+- apt_key:
+    url: "https://download.docker.com/linux/debian/gpg"
+
+- apt_repository:
+    repo: "deb https://download.docker.com/linux/debian {{ ansible_lsb.codename }} stable"
+    update_cache: yes
+
+- apt:
+    name: "docker-ce={{ docker_version }}"

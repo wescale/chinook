@@ -14,7 +14,7 @@ variable "private_subnet_cidr_b" {}
 variable "public_subnet_cidr_c" {}
 variable "private_subnet_cidr_c" {}
 
-variable "bastion_default_public_key" {}
+variable "public_key_path" {}
 
 # =============================================================================
 

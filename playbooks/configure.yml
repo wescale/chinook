@@ -33,3 +33,4 @@
   roles:
     - nomad-worker
     - prometheus-statsd
+    - docker

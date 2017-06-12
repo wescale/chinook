@@ -2,7 +2,7 @@
 
 resource "aws_key_pair" "masters_keypair" {
   key_name   = "${var.project_name}-${var.project_region}-masters"
-  public_key = "${var.masters_default_public_key}"
+  public_key = "${file(var.public_key_path)}"
 }
 
 resource "aws_elb" "masters" {

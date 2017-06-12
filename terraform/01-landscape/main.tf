@@ -11,7 +11,7 @@ resource "aws_vpc" "vpc" {
 
 resource "aws_key_pair" "bastion_keypair" {
   key_name   = "${var.project_name}-bastion"
-  public_key = "${var.bastion_default_public_key}"
+  public_key = "${file(var.public_key_path)}"
 }
 
 resource "aws_internet_gateway" "gateway" {
@@ -42,7 +42,7 @@ module "zone_a" {
   public_subnet_cidr = "${var.public_subnet_cidr_a}"
   private_subnet_cidr = "${var.private_subnet_cidr_a}"
   public_gateway_route_table_id = "${aws_route_table.main.id}"
-  bastion_default_public_key = "${var.bastion_default_public_key}"
+  bastion_default_public_key = "${file(var.public_key_path)}"
   bastion_security_group_id_list = [
     "${aws_security_group.server.id}"
   ]
@@ -56,7 +56,7 @@ module "zone_b" {
   public_subnet_cidr = "${var.public_subnet_cidr_b}"
   private_subnet_cidr = "${var.private_subnet_cidr_b}"
   public_gateway_route_table_id = "${aws_route_table.main.id}"
-  bastion_default_public_key = "${var.bastion_default_public_key}"
+  bastion_default_public_key = "${file(var.public_key_path)}"
   bastion_security_group_id_list = [
     "${aws_security_group.server.id}"
   ]
@@ -70,7 +70,7 @@ module "zone_c" {
   public_subnet_cidr = "${var.public_subnet_cidr_c}"
   private_subnet_cidr = "${var.private_subnet_cidr_c}"
   public_gateway_route_table_id = "${aws_route_table.main.id}"
-  bastion_default_public_key = "${var.bastion_default_public_key}"
+  bastion_default_public_key = "${file(var.public_key_path)}"
   bastion_security_group_id_list = [
     "${aws_security_group.server.id}"
   ]

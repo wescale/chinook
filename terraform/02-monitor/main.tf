@@ -1,6 +1,6 @@
 resource "aws_key_pair" "monitor_keypair" {
   key_name   = "${var.project_name}-${var.project_region}-monitor"
-  public_key = "${var.monitor_default_public_key}"
+  public_key = "${file(var.public_key_path)}"
 }
 
 resource "aws_instance" "monitor" {
