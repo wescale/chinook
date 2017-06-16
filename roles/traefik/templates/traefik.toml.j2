@@ -1,0 +1,8 @@
+[entryPoints]
+[entryPoints.http]
+  address = ":80"
+
+[consulCatalog]
+prefix      = "traefik"
+constraints = ["tag==dashboard"]
+# Matching with containers having this tag: "traefik.tags=api,helloworld"

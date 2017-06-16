@@ -1,0 +1,12 @@
+---
+- name: restart traefik
+  systemd:
+    name: "{{ traefik_user_name }}"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted

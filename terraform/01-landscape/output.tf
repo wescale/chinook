@@ -71,3 +71,7 @@ output "bastion_c" {
 output "common_sg" {
   value = "${aws_security_group.server.id}"
 }
+
+output "landscape_az_list" {
+  value = ["eu-west-1a","eu-west-1b","eu-west-1c"]
+}

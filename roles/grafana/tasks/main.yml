@@ -42,6 +42,11 @@
     dest: "/lib/systemd/system/grafana.service"
   register: grafana_service
 
+- template:
+    src: "consul.service.json.j2"
+    dest: "/etc/consul.d/grafana.json"
+  notify: restart consul
+
 - shell: >
     systemctl daemon-reload
   when: grafana_service|changed

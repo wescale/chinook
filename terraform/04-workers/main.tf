@@ -24,7 +24,7 @@ resource "aws_instance" "workers" {
     )
   }"
 
-  security_groups = [
+  vpc_security_group_ids = [
     "${data.terraform_remote_state.landscape.bastion_realm_sg}",
     "${data.terraform_remote_state.landscape.common_sg}"
   ]

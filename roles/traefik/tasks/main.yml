@@ -1,0 +1,57 @@
+---
+- name: download traefik archive
+  get_url:
+    url: "{{ traefik_binary_url }}"
+    dest: "/usr/local/bin/traefik"
+    checksum: "sha256:{{ traefik_archive_sum }}"
+    mode: "0755"
+
+- name: create system group
+  group:
+    name: "{{ traefik_user_name }}"
+    gid: "{{ traefik_user_id }}"
+    system: yes
+
+- name: create system user
+  user:
+    name: "{{ traefik_user_name }}"
+    group: "{{ traefik_user_name }}"
+    uid: "{{ traefik_user_id }}"
+    createhome: no
+    system: yes
+
+- name: create configuration directory
+  file:
+    path: "{{ traefik_config_dir }}"
+    state: directory
+    mode: "0750"
+    group: "{{ traefik_user_name }}"
+
+- name: generate configuration
+  template:
+    src: "traefik.toml.j2"
+    dest: "{{ traefik_config_dir }}/traefik.conf.toml"
+    group: "{{ traefik_user_name }}"
+    mode: "0640"
+  notify: restart traefik
+
+- name: generate rsyslog configuration
+  copy:
+    dest: "/etc/rsyslog.d/traefik.conf"
+    mode: "0644"
+    content: >-
+      traefik     /var/log/traefik.log
+  notify: restart rsyslog
+
+- name: generate systemd service
+  template:
+    src: "traefik.service.j2"
+    dest: "/etc/systemd/system/traefik.service"
+    mode: "0640"
+  notify: restart traefik
+
+- name: at last traefik is made available
+  service:
+    name: "{{ traefik_user_name }}"
+    state: started
+    enabled: yes

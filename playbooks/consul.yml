@@ -1,0 +1,19 @@
+---
+- hosts: masters
+  become: yes
+
+  tasks:
+    - pip:
+        name: python-consul
+
+    - name: add or update the value associated with a key in the key/value store
+      consul_kv:
+        key: traefik/defaultEntryPoints
+        value: http
+
+    - consul_kv:
+        key: traefik/entryPoints/entryPoints.http/address
+        value: ":80"
+    - consul_kv:
+        key: traefik/web/address
+        value: ":8080"

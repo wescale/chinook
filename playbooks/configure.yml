@@ -3,6 +3,7 @@
   become: yes
   tags:
     - agents
+    - traefik
   roles:
     - consul-agent
     - prometheus-node
@@ -11,19 +12,18 @@
   become: yes
   roles:
     - prometheus-master
+
+- hosts: monitor
+  become: yes
+  tags:
+    - monitor
+  roles:
     - grafana
 
 - hosts: nomad-servers-bootstrap
   become: yes
   roles:
     - nomad-server
-    - prometheus-statsd
-
-- hosts: nomad-servers-bootstrap
-  become: yes
-  tags:
-    - statsd
-  roles:
     - prometheus-statsd
 
 - hosts: nomad-workers
@@ -34,3 +34,11 @@
     - nomad-worker
     - prometheus-statsd
     - docker
+
+- hosts: entry
+  become: yes
+  tags:
+    - traefik
+    - monitor
+  roles:
+    - traefik
