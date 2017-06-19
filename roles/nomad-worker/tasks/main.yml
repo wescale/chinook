@@ -29,10 +29,15 @@
     gid: "{{ nomad_worker_user_id }}"
     system: yes
 
+- name: docker group is created
+  group:
+    name: "docker"
+
 - name: create system user
   user:
     name: "{{ nomad_worker_user_name }}"
     group: "{{ nomad_worker_user_name }}"
+    groups: "docker"
     uid: "{{ nomad_worker_user_id }}"
     createhome: no
     system: yes

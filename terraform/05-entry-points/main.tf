@@ -116,7 +116,7 @@ resource "aws_elb" "bar" {
   connection_draining_timeout = 400
 
   security_groups = [
-        "${aws_security_group.elb_front.id}"
+    "${aws_security_group.elb_front.id}"
   ]
   tags {
     Name = "${var.project_name}-terraform-elb"

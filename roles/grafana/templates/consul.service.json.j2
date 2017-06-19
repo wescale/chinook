@@ -3,10 +3,10 @@
     "name": "traefik/grafana",
     "tags": [
         "traefik.frontend.entrypoints=http",
-        "traefik.frontend.backend=grafana-priv",
+        "traefik.frontend.backend=grafana",
         "traefik.frontend.passHostHeader=true",
-        "traefik.frontend.rule=Host:grafana.chinook.aws.wescale.fr",
-        "traefik.backends.grafana-priv.servers.server1.url=http://{{ ansible_default_ipv4.address }}:3000/",
+        "traefik.frontend.rule=Host:metrics.chinook.aws.wescale.fr",
+        "traefik.backends.grafana.servers.monitor.url=http://{{ ansible_default_ipv4.address }}:3000/",
         "traefik.tags=dashboard"
     ],
     "port": 3000

@@ -1,75 +1,33 @@
-job "lb" {
+job "betamax" {
   datacenters = ["dc1"]
 
-  constraint {
-    attribute = "${node.class}"
-    value     = "loadbalancer"
-  }
-
-  task "traefik" {
+  task "web" {
     driver = "docker"
 
-    artifact {
-      source      = "git::https://github.com/AreteLabs/nomad-examples"
-      destination = "local/config"
-    }
-
-    template {
-      source      = "local/config/traefik/traefik.toml"
-      destination = "local/traefik/traefik.toml"
-    }
-
     config {
-      image = "traefik"
-
-      volumes = [
-        "local/traefik:/etc/traefik",
-      ]
-
-      args = [
-        "--web",
-      ]
+      image = "seqvence/static-site"
 
       port_map {
-        admin    = 8080
-        frontend = 80
-      }
-
-      dns_servers = ["${NOMAD_IP_admin}"]
-    }
-
-    service {
-      name = "traefik-admin"
-
-      port = "admin"
-
-      tags = [
-        "loadbalancer",
-        "admin",
-        "traefik.enable=true",
-        "traefik.frontend.rule=Host:admin.10.244.234.64.sslip.io"
-      ]
-
-      check {
-        type     = "tcp"
-        port     = "admin"
-        interval = "10s"
-        timeout  = "2s"
+        web = 80
       }
     }
 
     service {
-      name = "traefik-frontend"
-      port = "frontend"
+      name = "betamax"
+      port = "web"
 
       tags = [
-        "loadbalancer",
-        "frontend"
+        "traefik.frontend.entrypoints=http",
+        "traefik.frontend.backend=${NOMAD_JOB_NAME}",
+        "traefik.frontend.passHostHeader=true",
+        "traefik.frontend.rule=Host:${NOMAD_JOB_NAME}.chinook.aws.wescale.fr",
+        "traefik.backends.grafana-priv.servers.server1.url=http://${NOMAD_ADDR_web}/",
+        "traefik.tags=dashboard"
       ]
 
       check {
         type     = "tcp"
-        port     = "frontend"
+        port     = "web"
         interval = "10s"
         timeout  = "2s"
       }
@@ -82,12 +40,7 @@ job "lb" {
       network {
         mbits = 50
 
-        port "admin" {
-        }
-
-        port "frontend" {
-          static = "80"
-        }
+        port "web" {}
       }
     }
   }
