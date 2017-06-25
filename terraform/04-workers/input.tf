@@ -15,6 +15,13 @@ provider "aws" {
 
 # =============================================================================
 
+data "terraform_remote_state" "masters" {
+  backend = "local"
+  config {
+    path = "${path.module}/../03-masters/terraform.tfstate"
+  }
+}
+
 data "terraform_remote_state" "landscape" {
   backend = "local"
   config {

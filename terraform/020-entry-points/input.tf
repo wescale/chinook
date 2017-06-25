@@ -1,9 +1,22 @@
 # =============================================================================
 
 variable "project_name" {}
+
 variable "project_region" {}
 
 variable "public_key_path" {}
+
+variable "route53_zone_id" {}
+
+variable "route53_zone_domain" {}
+
+variable "entry_instance_type" {
+  default = "t2.micro"
+}
+
+variable "entry_instance_count" {
+  default = "1"
+}
 
 # =============================================================================
 

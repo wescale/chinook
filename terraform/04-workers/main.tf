@@ -26,8 +26,7 @@ resource "aws_instance" "workers" {
 
   vpc_security_group_ids = [
     "${data.terraform_remote_state.landscape.bastion_realm_sg}",
-    "${data.terraform_remote_state.landscape.common_sg}",
-    "${aws_security_group.workers.id}"
+    "${data.terraform_remote_state.masters.nomad_realm_sg}"
   ]
 
   iam_instance_profile = "${data.terraform_remote_state.rights.masters_profile}"
@@ -45,25 +44,5 @@ EOF
 
   tags {
     Name = "${var.project_name}-${var.project_region}-worker-${count.index}"
-  }
-}
-
-resource "aws_security_group" "workers" {
-  name_prefix = "${var.project_name}-${var.project_region}-workers"
-
-  vpc_id = "${data.terraform_remote_state.landscape.vpc_id}"
-
-  ingress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks     = ["0.0.0.0/0"]
   }
 }

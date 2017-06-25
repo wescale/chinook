@@ -5,39 +5,6 @@ resource "aws_key_pair" "masters_keypair" {
   public_key = "${file(var.public_key_path)}"
 }
 
-resource "aws_elb" "masters" {
-  name = "${var.project_name}-${var.project_region}-masters"
-
-  subnets = [
-    "${data.terraform_remote_state.landscape.public_subnet_list}"
-  ]
-
-  internal = false
-
-  instances = [
-    "${aws_instance.masters.*.id}"
-  ]
-
-  security_groups = [
-    "${data.terraform_remote_state.landscape.common_sg}"
-  ]
-
-  listener {
-    instance_port     = 8500
-    instance_protocol = "tcp"
-    lb_port           = 8500
-    lb_protocol       = "tcp"
-  }
-
-  health_check {
-    healthy_threshold = 2
-    unhealthy_threshold = 10
-    timeout = 3
-    target = "TCP:8500"
-    interval = 30
-  }
-}
-
 resource "aws_instance" "masters" {
 
   ami = "${data.aws_ami.debian.id}"
@@ -59,7 +26,7 @@ resource "aws_instance" "masters" {
 
   vpc_security_group_ids = [
     "${data.terraform_remote_state.landscape.bastion_realm_sg}",
-    "${data.terraform_remote_state.landscape.common_sg}"
+    "${aws_security_group.nomad_realm.id}"
   ]
 
   iam_instance_profile = "${data.terraform_remote_state.rights.masters_profile}"

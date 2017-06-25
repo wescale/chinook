@@ -1,3 +1,0 @@
----
-ansible_groups_to_tf_output:
-  entry: entry_instance

@@ -23,8 +23,7 @@ resource "aws_instance" "monitor" {
   }"
 
   vpc_security_group_ids = [
-    "${data.terraform_remote_state.landscape.bastion_realm_sg}",
-    "${data.terraform_remote_state.landscape.common_sg}"
+    "${data.terraform_remote_state.landscape.bastion_realm_sg}"
   ]
 
   iam_instance_profile = "${data.terraform_remote_state.rights.masters_profile}"

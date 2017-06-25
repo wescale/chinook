@@ -68,10 +68,6 @@ output "bastion_c" {
   value = "${module.zone_c.bastion_ip}"
 }
 
-output "common_sg" {
-  value = "${aws_security_group.server.id}"
-}
-
 output "landscape_az_list" {
   value = ["eu-west-1a","eu-west-1b","eu-west-1c"]
 }

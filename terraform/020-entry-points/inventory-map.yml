@@ -1,0 +1,7 @@
+---
+ansible_groups_to_tf_output:
+  entry: entry_instance
+
+layer_dependencies:
+  landscape: "01-landscape"
+  rights: "00-access-rights"
