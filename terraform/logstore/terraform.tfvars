@@ -1,0 +1,1 @@
+logstore_number = 3

@@ -1,0 +1,22 @@
+server:
+ interface: 127.0.0.1
+ logfile: /var/log/unbound/unbound.log
+
+ # Consul does not support DNSSEC
+ domain-insecure: "consul"
+ do-ip4: yes
+ do-ip6: no
+ do-udp: yes
+ do-tcp: yes
+
+ verbosity: 1
+
+ hide-identity: yes
+ hide-version: yes
+ harden-glue: yes
+ use-caps-for-id: yes
+ do-not-query-localhost: no
+
+stub-zone:
+  name: "consul"
+  stub-addr: "127.0.0.1@8600"

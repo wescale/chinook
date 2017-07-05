@@ -1,44 +1,38 @@
 ---
 - hosts: all
+  strategy: free
   become: yes
-  tags:
-    - agents
-    - traefik
+  pre_tasks:
+    - debug: msg={{hostvars[inventory_hostname]}}
   roles:
     - consul-agent
+    - unbound
     - prometheus-node
 
 - hosts: monitor
+  strategy: free
   become: yes
   roles:
     - prometheus-master
-
-- hosts: monitor
-  become: yes
-  tags:
-    - monitor
-  roles:
     - grafana
 
 - hosts: nomad-servers-bootstrap
+  strategy: free
   become: yes
   roles:
     - nomad-server
     - prometheus-statsd
 
 - hosts: nomad-workers
+  strategy: free
   become: yes
-  tags:
-    - nomad
   roles:
     - nomad-worker
     - prometheus-statsd
     - docker
 
 - hosts: entry
+  strategy: free
   become: yes
-  tags:
-    - traefik
-    - monitor
   roles:
     - traefik

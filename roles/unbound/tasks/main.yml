@@ -1,0 +1,23 @@
+---
+- name: install unbound
+  apt:
+    name: unbound
+    state: present
+
+- template:
+    src: local-consul-unbound.conf.j2
+    dest: /etc/unbound/unbound.conf.d/local-consul.conf
+  notify: restart unbound
+
+- lineinfile:
+    path: /etc/resolv.conf
+    line: "nameserver 127.0.0.1"
+    insertbefore: "^nameserver .*$"
+
+- service:
+    name: unbound
+    state: started
+    enabled: true
+
+- meta: flush_handlers
+

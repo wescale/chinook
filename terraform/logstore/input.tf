@@ -3,18 +3,12 @@
 variable "project_name" {}
 variable "project_region" {}
 
-variable "vpc_cidr" {}
-
-variable "public_subnet_cidr_a" {}
-variable "private_subnet_cidr_a" {}
-
-variable "public_subnet_cidr_b" {}
-variable "private_subnet_cidr_b" {}
-
-variable "public_subnet_cidr_c" {}
-variable "private_subnet_cidr_c" {}
-
 variable "public_key_path" {}
+
+variable "logstore_number" {}
+variable "logstore_instance_type" {
+  default = "t2.small"
+}
 
 # =============================================================================
 
@@ -23,6 +17,20 @@ provider "aws" {
 }
 
 # =============================================================================
+
+data "terraform_remote_state" "landscape" {
+  backend = "local"
+  config {
+    path = "${path.module}/../01-landscape/terraform.tfstate"
+  }
+}
+
+data "terraform_remote_state" "rights" {
+  backend = "local"
+  config {
+    path = "${path.module}/../00-access-rights/terraform.tfstate"
+  }
+}
 
 data "aws_ami" "debian" {
   most_recent = true
@@ -39,9 +47,3 @@ data "aws_ami" "debian" {
 
   owners = ["379101102735"] # Debian Project
 }
-
-
-
-
-
-

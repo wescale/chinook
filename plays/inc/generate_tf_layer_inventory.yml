@@ -1,7 +1,7 @@
 ---
 - name: variable rebranding
   set_fact:
-    clean_layer_name: "{{ layer_name|regex_replace('^[0-9]{2}-', '') }}"
+    clean_layer_name: "{{ layer_name|regex_replace('^[0-9]{2,3}-', '') }}"
 
 - name: including terraform layer var file
   include_vars:
