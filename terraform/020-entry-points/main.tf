@@ -47,9 +47,9 @@ EOF
 resource "aws_elb" "entry" {
   name      = "${var.project_name}-traefik"
 
-  idle_timeout                = 400
+  idle_timeout                = 30
   connection_draining         = true
-  connection_draining_timeout = 400
+  connection_draining_timeout = 30
   cross_zone_load_balancing   = true
 
   subnets   = [
@@ -73,10 +73,10 @@ resource "aws_elb" "entry" {
 
   health_check {
     healthy_threshold   = 2
-    unhealthy_threshold = 8
-    timeout             = 3
+    unhealthy_threshold = 3
+    timeout             = 5
     target              = "TCP:80"
-    interval            = 60
+    interval            = 10
   }
 
   tags {

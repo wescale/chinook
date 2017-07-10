@@ -11,7 +11,7 @@ variable "route53_zone_id" {}
 variable "route53_zone_domain" {}
 
 variable "entry_instance_type" {
-  default = "t2.micro"
+  default = "t2.small"
 }
 
 variable "entry_instance_count" {

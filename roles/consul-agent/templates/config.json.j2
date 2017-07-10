@@ -7,7 +7,7 @@
     "enable_syslog": true,
     "start_join": [
     {%- for host in groups['consul-servers-bootstrap'] -%}
-    {{ comma() }}"{{ hostvars[inventory_hostname]['ansible_'+consul_network_interface]['ipv4']['address'] }}"
+    {{ comma() }}"{{ hostvars[host]['ansible_'+consul_network_interface]['ipv4']['address'] }}"
     {%- endfor -%}
     ]
 }

@@ -1,55 +1,65 @@
 ---
 - hosts: all
+  become: yes
+  tags:
+    - base
+  tasks:
+    - setup:
+
+- hosts: entry
   strategy: free
   become: yes
+  tags:
+    - base
   roles:
     - consul-agent
     - unbound
     - prometheus-node
 
-- hosts: monitor
-  strategy: free
-  become: yes
-  roles:
-    - prometheus-master
-    - grafana
-
-- hosts: nomad-servers-bootstrap
-  strategy: free
-  become: yes
-  roles:
-    - nomad-server
-    - prometheus-statsd
-
-- hosts: nomad-workers
-  strategy: free
-  become: yes
-  roles:
-    - nomad-worker
-    - prometheus-statsd
-    - docker
+#
+#- hosts: monitor
+#  strategy: free
+#  become: yes
+#  roles:
+#    - prometheus-master
+#    - grafana
+#
+#- hosts: nomad-servers-bootstrap
+#  strategy: free
+#  become: yes
+#  roles:
+#    - nomad-server
+#    - prometheus-statsd
+#
+#- hosts: nomad-workers
+#  strategy: free
+#  become: yes
+#  roles:
+#    - nomad-worker
+#    - prometheus-statsd
+#    - docker
 
 - hosts: entry
   strategy: free
   become: yes
   roles:
     - traefik
-
-- hosts: logstores
-  become: yes
-  pre_tasks:
-    - apt_repository:
-        repo: "deb http://httpredir.debian.org/debian jessie-backports main contrib non-free"
-        update_cache: yes
-  roles:
-    - role: elasticsearch
-      vars:
-        es_instance_name: "{{ inventory_hostname }}"
-        es_config:
-          node.name: "{{ inventory_hostname }}"
-          cluster.name: "logstore"
-          discovery.zen.ping.unicast.hosts: "{{ hostvars[groups['logstores'][0]].ansible_default_ipv4.address }}:9201"
-          network.host: "{{ ansible_default_ipv4.address }}"
-          transport.tcp.port: 9300
-        es_api_host: "{{ ansible_default_ipv4.address }}"
-        es_api_port: 9200
+#
+#- hosts: logstores
+#  become: yes
+#  pre_tasks:
+#    - apt_repository:
+#        repo: "deb http://httpredir.debian.org/debian jessie-backports main contrib non-free"
+#        update_cache: yes
+#  roles:
+#    - role: elasticsearch
+#      vars:
+#        es_instance_name: "{{ inventory_hostname }}"
+#        es_config:
+#          node.name: "{{ inventory_hostname }}"
+#          cluster.name: "logstore"
+#          discovery.zen.ping.unicast.hosts: "{{ hostvars[groups['logstores'][0]].ansible_default_ipv4.address }}:9201"
+#          network.host: "{{ ansible_default_ipv4.address }}"
+#          transport.tcp.port: 9300
+#        es_api_host: "{{ ansible_default_ipv4.address }}"
+#        es_api_port: 9200

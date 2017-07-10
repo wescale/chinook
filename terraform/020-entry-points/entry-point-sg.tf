@@ -20,7 +20,7 @@ resource "aws_security_group_rule" "on_elb_front_out" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
-  protocol          = "tcp"
+  protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
@@ -40,3 +40,4 @@ resource "aws_security_group_rule" "on_elb_back" {
   protocol          = "tcp"
   source_security_group_id     = "${aws_security_group.elb_front.id}"
 }
+
