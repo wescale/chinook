@@ -6,23 +6,23 @@
   tasks:
     - setup:
 
-- hosts: entry
-  strategy: free
-  become: yes
-  tags:
-    - base
-  roles:
-    - consul-agent
-    - unbound
-    - prometheus-node
-
-#
-#- hosts: monitor
+#- hosts: entry
 #  strategy: free
 #  become: yes
+#  tags:
+#    - base
 #  roles:
-#    - prometheus-master
-#    - grafana
+#    - consul-agent
+#    - unbound
+#    - prometheus-node
+
+#
+- hosts: monitor
+  strategy: free
+  become: yes
+  roles:
+    - prometheus-master
+    - grafana
 #
 #- hosts: nomad-servers-bootstrap
 #  strategy: free

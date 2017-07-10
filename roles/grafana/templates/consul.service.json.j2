@@ -7,7 +7,7 @@
         "traefik.frontend.passHostHeader=true",
         "traefik.frontend.rule=Host:metrics.chinook.aws.wescale.fr",
         "traefik.backends.grafana.servers.monitor.url=http://{{ ansible_default_ipv4.address }}:3000/",
-        "traefik.tags=dashboard"
+        "traefik.tags=exposed"
     ],
     "port": 3000
   }

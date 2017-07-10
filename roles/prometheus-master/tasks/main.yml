@@ -46,6 +46,11 @@
     group: "{{ prometheus_user }}"
   notify: restart prometheus
 
+- template:
+    src: "prom-master.consul-service.json.j2"
+    dest: "/etc/consul.d/prom-master.json"
+  notify: restart consul
+
 - service:
     name: prometheus
     state: started
