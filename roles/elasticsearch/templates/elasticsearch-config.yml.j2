@@ -1,0 +1,25 @@
+
+{% if es_config %}
+{{ es_config | to_nice_yaml }}
+{% endif %}
+
+{% if es_config['cluster.name'] is not defined %}
+cluster.name: elasticsearch
+{% endif %}
+
+{% if es_config['node.name'] is not defined %}
+node.name: {{inventory_hostname}}-{{es_instance_name}}
+{% endif %}
+
+# Access for metrics
+# http.cors.enabled: true
+# http.cors.allow-origin: "*"
+
+#################################### Paths ####################################
+
+# Path to directory containing configuration (this file and logging.yml):
+path.conf: {{ es_conf_dir }}
+
+path.data: {{ es_data_dir }}
+
+path.logs: {{ es_log_dir }}

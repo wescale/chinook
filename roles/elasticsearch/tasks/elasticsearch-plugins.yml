@@ -1,0 +1,39 @@
+---
+- name: Check installed elasticsearch plugins
+  shell: >-
+    ls {{es_home}}/plugins
+  register: installed_plugins
+  changed_when: false
+
+# This removes any currently installed plugins (to prevent errors when reinstalling)
+- name: Remove elasticsearch plugins
+  shell: >-
+    {{ es_home }}/bin/elasticsearch-plugin remove {{ item }} --silent
+  with_items: "{{ installed_plugins.stdout_lines }}"
+  environment:
+    CONF_DIR: "{{ es_conf_dir }}"
+    ES_INCLUDE: "{{ default_file }}"
+  notify: restart elasticsearch
+
+- name: Install elasticsearch plugins
+  become_user: "{{ es_user }}"
+  shell: >-
+    {{ es_home }}/bin/elasticsearch-plugin install {{ item.plugin }} --batch --silent
+  register: plugin_installed
+  failed_when: "'ERROR' in plugin_installed.stdout"
+  with_items: "{{ es_plugins }}"
+  environment:
+    CONF_DIR: "{{ es_conf_dir }}"
+    ES_INCLUDE: "{{ default_file }}"
+  until: plugin_installed.rc == 0
+  retries: 5
+  delay: 5
+  notify: restart elasticsearch
+
+# - name: Set Plugin Directory Permissions
+#   file:
+#     state: directory
+#     path: "{{ es_home }}/plugins"
+#     owner: "{{ es_user }}"
+#     group: "{{ es_group }}"
+#     recurse: yes

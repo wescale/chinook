@@ -2,8 +2,6 @@
 - hosts: all
   strategy: free
   become: yes
-  pre_tasks:
-    - debug: msg={{hostvars[inventory_hostname]}}
   roles:
     - consul-agent
     - unbound
@@ -36,3 +34,22 @@
   become: yes
   roles:
     - traefik
+
+- hosts: logstores
+  become: yes
+  pre_tasks:
+    - apt_repository:
+        repo: "deb http://httpredir.debian.org/debian jessie-backports main contrib non-free"
+        update_cache: yes
+  roles:
+    - role: elasticsearch
+      vars:
+        es_instance_name: "{{ inventory_hostname }}"
+        es_config:
+          node.name: "{{ inventory_hostname }}"
+          cluster.name: "logstore"
+          discovery.zen.ping.unicast.hosts: "{{ hostvars[groups['logstores'][0]].ansible_default_ipv4.address }}:9201"
+          network.host: "{{ ansible_default_ipv4.address }}"
+          transport.tcp.port: 9300
+        es_api_host: "{{ ansible_default_ipv4.address }}"
+        es_api_port: 9200
