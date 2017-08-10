@@ -4,8 +4,8 @@
     state: present
 
 - apt_repository:
-    repo: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
-    filename: "elastic-5.x"
+    repo: "deb https://artifacts.elastic.co/packages/2.x/apt stable main"
+    filename: "elastic-2.x"
     update_cache: yes
 
 - apt:
