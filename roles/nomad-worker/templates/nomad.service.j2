@@ -11,5 +11,6 @@ ExecStart=/usr/local/bin/nomad agent -config={{ nomad_worker_config_dir }}
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGINT
 
+
 [Install]
 WantedBy=multi-user.target

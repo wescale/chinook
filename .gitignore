@@ -12,3 +12,4 @@ roles/seed
 *.tfstate
 inventories/*.inventory
 ssh.cfg
+plays/graylog-server-salt

@@ -1,0 +1,19 @@
+---
+- hosts: logstores_0
+  become: yes
+
+  vars:
+    graylog_admin_password: "admin"
+
+  pre_tasks:
+
+    - apt_repository:
+        repo: "deb http://httpredir.debian.org/debian stretch-backports main contrib non-free"
+        update_cache: yes
+
+    - apt:
+        upgrade: full
+        update_cache: yes
+
+  roles:
+    - graylog-appliance

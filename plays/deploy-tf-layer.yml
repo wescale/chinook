@@ -11,9 +11,9 @@
           Please define 'layer_name' variable.
 
   tasks:
-    - name: terraform plan
+    - name: "{{ layer_name }} - terraform plan"
       shell: >-
-        terraform get -update=true
+        terraform init
         &&
         terraform plan {{ common_tf_vars }} -lock=false
       args:
@@ -41,7 +41,7 @@
       tags:
         - terraform
 
-    - name: terraform apply
+    - name: "{{ layer_name }} - terraform apply"
       shell: >-
         terraform apply {{ common_tf_vars }} -lock=false
       args:
@@ -49,11 +49,11 @@
       tags:
         - terraform
 
-    - name: checking for var file to generate inventory
+    - name: "{{ layer_name }} - checking for var file to generate inventory"
       stat:
         path: "{{ terraform_current_layer }}/inventory-map.yml"
       register: inventory_map
 
-    - name: generating local inventory
+    - name: "{{ layer_name }} - generating local inventory"
       include: "{{ playbook_dir }}/inc/generate_tf_layer_inventory.yml"
       when: inventory_map.stat.exists

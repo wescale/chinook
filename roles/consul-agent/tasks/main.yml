@@ -60,6 +60,14 @@
     mode: "0640"
   notify: restart consul
 
+- name: generate configuration
+  template:
+    src: "http.consul-service.json.j2"
+    dest: "{{ consul_config_dir }}/consul-ui.json"
+    group: "{{ consul_user_name }}"
+    mode: "0640"
+  notify: restart consul
+
 - name: generate default variables
   template:
     src: "env.{{ consul_mode }}.j2"
@@ -72,8 +80,9 @@
   copy:
     dest: "/etc/rsyslog.d/consul.conf"
     mode: "0644"
-    content: >-
-      consul     /var/log/consul.log
+    content: |-
+      :programname, isequal, "consul" /var/log/consul.log
+      & stop
   notify: restart rsyslog
 
 - name: generate systemd service

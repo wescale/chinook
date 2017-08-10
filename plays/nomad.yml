@@ -1,0 +1,11 @@
+---
+- hosts: nomad-workers
+  any_errors_fatal: true
+  become: yes
+  tags:
+    - nomad-worker
+    - nomad
+  roles:
+    - nomad-worker
+#    - prometheus-statsd
+#    - docker

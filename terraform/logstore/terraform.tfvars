@@ -1,1 +1,1 @@
-logstore_number = 3
+logstore_number = 1

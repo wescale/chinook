@@ -1,0 +1,71 @@
+---
+- apt_key:
+    url: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
+    state: present
+
+- apt_repository:
+    repo: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
+    filename: "elastic-5.x"
+    update_cache: yes
+
+- apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "ca-certificates-java"
+    - "apt-transport-https"
+    - "openjdk-8-jre-headless"
+    - "uuid-runtime"
+    - "pwgen"
+    - "mongodb-server"
+    - "elasticsearch"
+
+- lineinfile:
+    path: "/etc/elasticsearch/elasticsearch.yml"
+    regexp: >-
+      ^cluster.name: .*$
+    line: >-
+      cluster.name: graylog
+
+- name: enable elasticsearch
+  systemd:
+    name: "elasticsearch"
+    state: started
+    enabled: yes
+    daemon_reload: yes
+
+- name: Install a .deb package from the internet.
+  apt:
+    deb: "https://packages.graylog2.org/repo/packages/graylog-2.3-repository_latest.deb"
+
+- apt:
+    name: "graylog-server"
+    state: present
+    update_cache: yes
+
+- set_fact:
+    graylog_secret: >-
+
+
+- lineinfile:
+    path: "/etc/graylog/server/server.conf"
+    regexp: >-
+      ^password_secret =.*$
+    line: >-
+      password_secret = {{ lookup('password', playbook_dir+'/graylog-server-salt chars=ascii_letters,digits,hexdigits,punctuation length=64') }}
+
+- lineinfile:
+    path: "/etc/graylog/server/server.conf"
+    regexp: >-
+      ^root_password_sha2 =.*$
+    line: >-
+      root_password_sha2 = {{ graylog_admin_password|hash('sha256') }}
+
+
+
+- name: enable elasticsearch
+  systemd:
+    name: "graylog-server"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes

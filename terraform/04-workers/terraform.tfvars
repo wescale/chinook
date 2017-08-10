@@ -1,1 +1,1 @@
-workers_number = 5
+workers_number = 1

@@ -9,5 +9,8 @@
     {%- for host in groups['consul-servers-bootstrap'] -%}
     {{ comma() }}"{{ hostvars[host]['ansible_'+consul_network_interface]['ipv4']['address'] }}"
     {%- endfor -%}
-    ]
+    ]{% if consul_mode == 'server' %},
+    "addresses": {
+        "http": "0.0.0.0"
+    }{% endif %}
 }

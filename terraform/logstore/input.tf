@@ -7,7 +7,7 @@ variable "public_key_path" {}
 
 variable "logstore_number" {}
 variable "logstore_instance_type" {
-  default = "t2.small"
+  default = "m4.xlarge"
 }
 
 # =============================================================================
@@ -37,7 +37,7 @@ data "aws_ami" "debian" {
 
   filter {
     name   = "name"
-    values = ["debian-jessie-amd64-hvm-*"]
+    values = ["debian-stretch-hvm-x86_64-gp2*"]
   }
 
   filter {

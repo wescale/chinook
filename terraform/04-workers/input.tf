@@ -41,7 +41,7 @@ data "aws_ami" "debian" {
 
   filter {
     name   = "name"
-    values = ["debian-jessie-amd64-hvm-*"]
+    values = ["debian-stretch-hvm-x86_64-gp2*"]
   }
 
   filter {
