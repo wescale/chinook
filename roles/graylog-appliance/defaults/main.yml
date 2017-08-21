@@ -1,0 +1,6 @@
+---
+graylog_appliance_conf:
+  - conf_key: "password_secret"
+    conf_value: "{{ graylog_server_salt }}"
+  - conf_key: "root_password_sha2"
+    conf_value: "{{ graylog_admin_password|hash('sha256') }}"

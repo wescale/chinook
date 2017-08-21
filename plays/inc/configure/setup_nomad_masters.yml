@@ -1,0 +1,10 @@
+---
+- hosts: nomad-servers-bootstrap
+  become: yes
+  any_errors_fatal: true
+  tags:
+    - nomad-server
+    - nomad
+  roles:
+    - nomad-server
+    - prometheus-statsd

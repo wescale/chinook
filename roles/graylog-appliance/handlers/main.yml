@@ -1,0 +1,12 @@
+---
+- name: restart graylog
+  systemd:
+    name: "graylog-server"
+    state: restarted
+    enabled: yes
+
+- name: restart elasticsearch
+  systemd:
+    name: "elasticsearch"
+    state: restarted
+    enabled: yes

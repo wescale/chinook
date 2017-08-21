@@ -1,0 +1,6 @@
+---
+- hosts: logstores
+  become: yes
+
+  roles:
+    - graylog-appliance

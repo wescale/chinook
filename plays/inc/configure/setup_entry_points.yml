@@ -1,0 +1,5 @@
+---
+- hosts: entry
+  become: yes
+  roles:
+    - traefik

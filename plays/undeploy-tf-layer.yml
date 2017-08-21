@@ -19,3 +19,6 @@
       args:
         chdir: "{{ terraform_current_layer }}"
 
+    - file:
+        path: "{{ inventory_dir }}/{{ clean_layer_name }}.inventory"
+        state: absent

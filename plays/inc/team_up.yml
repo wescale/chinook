@@ -1,0 +1,26 @@
+---
+- hosts: all
+  gather_facts: no
+  become: yes
+
+  tasks:
+    - name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
+      become: no
+      wait_for:
+        port: 22
+        host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+        search_regex: OpenSSH
+        sleep: 5
+      delegate_to: localhost
+
+    - name: wait for apt lock to be free
+      shell:
+        fuser /var/lib/dpkg/lock
+      failed_when: no
+      changed_when: no
+      register: apt_lock
+      until: apt_lock.rc == 1
+      retries: 30
+      delay: 10
+
+    - setup:

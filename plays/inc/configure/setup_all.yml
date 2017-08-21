@@ -1,9 +1,6 @@
 ---
-- hosts: logstores_0
+- hosts: all
   become: yes
-
-  vars:
-    graylog_admin_password: "admin"
 
   pre_tasks:
 
@@ -16,4 +13,9 @@
         update_cache: yes
 
   roles:
-    - graylog-appliance
+    - seed
+    - consul-agent
+    - unbound
+    - prometheus-node
+
+

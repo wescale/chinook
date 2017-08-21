@@ -81,7 +81,7 @@
     dest: "/etc/rsyslog.d/consul.conf"
     mode: "0644"
     content: |-
-      :programname, isequal, "consul" /var/log/consul.log
+      :programname, isequal, "consul" @@{{ hostvars[groups['logstores'][0]].ansible_default_ipv4.address }}:5140;RSYSLOG_SyslogProtocol23Format
       & stop
   notify: restart rsyslog
 

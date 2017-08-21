@@ -3,3 +3,6 @@ project_name: "CHINOOK"
 project_region: "eu-west-1"
 
 ansible_user: admin
+
+
+secrets_dir: "{{ inventory_dir }}/../secrets"
