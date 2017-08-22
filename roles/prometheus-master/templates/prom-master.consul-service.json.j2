@@ -5,10 +5,11 @@
         "traefik.frontend.entrypoints=http",
         "traefik.frontend.backend=prometheus",
         "traefik.frontend.passHostHeader=true",
-        "traefik.frontend.rule=Host:prometheus.chinook.aws.wescale.fr",
+        "traefik.frontend.rule=Host:prometheus.{{ dns_public_domain }}",
         "traefik.backends.prometheus.servers.monitor.url=http://{{ ansible_default_ipv4.address }}:9090/",
-        "traefik.tags=exposed"
+        "traefik.tags=public"
     ],
     "port": 9090
   }
 }
+

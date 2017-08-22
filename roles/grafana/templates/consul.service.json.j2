@@ -5,9 +5,9 @@
         "traefik.frontend.entrypoints=http",
         "traefik.frontend.backend=grafana",
         "traefik.frontend.passHostHeader=true",
-        "traefik.frontend.rule=Host:metrics.chinook.aws.wescale.fr",
+        "traefik.frontend.rule=Host:grafana.{{ dns_internal_domain }}",
         "traefik.backends.grafana.servers.monitor.url=http://{{ ansible_default_ipv4.address }}:3000/",
-        "traefik.tags=internals"
+        "traefik.tags=internal"
     ],
     "port": 3000
   }

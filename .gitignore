@@ -13,3 +13,5 @@ roles/seed
 inventories/*.inventory
 ssh.cfg
 plays/graylog-server-salt
+backup
+*.creds

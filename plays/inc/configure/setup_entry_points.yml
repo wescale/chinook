@@ -1,11 +1,12 @@
 ---
+- hosts: all
+
 - hosts: entry
   become: yes
   roles:
     - role: traefik
       vars:
         traefik_consul_tags:
-          - exposed
           - public
 
 - hosts: entry_internal
@@ -14,5 +15,4 @@
     - role: traefik
       vars:
         traefik_consul_tags:
-          - internals
-          - monitor
+          - internal

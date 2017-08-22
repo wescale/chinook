@@ -144,7 +144,7 @@ resource "aws_elb" "monitor_entry" {
   ]
 
   instances = [
-    "${aws_instance.entry_instance.id}",
+    "${aws_instance.monitor_entry_instance.id}",
   ]
 
   security_groups = [
@@ -177,7 +177,7 @@ resource "aws_route53_record" "www-mon" {
   type    = "A"
 
   alias {
-    name                   = "${lower(aws_elb.entry.dns_name)}"
+    name                   = "${lower(aws_elb.monitor_entry.dns_name)}"
     zone_id                = "${aws_elb.monitor_entry.zone_id}"
     evaluate_target_health = true
   }
