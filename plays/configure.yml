@@ -1,13 +1,14 @@
 ---
-- name: include the necessary coordination step
-  include: "{{ playbook_dir }}/inc/team_up.yml"
+- include: "{{ playbook_dir }}/inc/team_up.yml"
 
-- name: include the configuration chapters -> {{ item }}
-  include: "{{ playbook_dir }}/inc/configure/setup_{{ item }}.yml"
-  with_items:
-    - all
-    - monitor
-    - nomad_masters
-    - nomad_workers
-    - nomad_entry_points
-    - nomad_graylog
+- include: "{{ playbook_dir }}/inc/configure/setup_all.yml"
+
+- include: "{{ playbook_dir }}/inc/configure/setup_monitor.yml"
+
+- include: "{{ playbook_dir }}/inc/configure/setup_nomad_masters.yml"
+
+- include: "{{ playbook_dir }}/inc/configure/setup_nomad_workers.yml"
+
+- include: "{{ playbook_dir }}/inc/configure/setup_entry_points.yml"
+
+- include: "{{ playbook_dir }}/inc/configure/setup_graylog.yml"

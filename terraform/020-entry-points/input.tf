@@ -10,6 +10,10 @@ variable "route53_zone_id" {}
 
 variable "route53_zone_domain" {}
 
+variable "route53_internal_zone_id" {}
+
+variable "route53_internal_zone_domain" {}
+
 variable "entry_instance_type" {
   default = "t2.small"
 }
@@ -28,6 +32,7 @@ provider "aws" {
 
 data "terraform_remote_state" "landscape" {
   backend = "local"
+
   config {
     path = "${path.module}/../01-landscape/terraform.tfstate"
   }
@@ -35,6 +40,7 @@ data "terraform_remote_state" "landscape" {
 
 data "terraform_remote_state" "rights" {
   backend = "local"
+
   config {
     path = "${path.module}/../00-access-rights/terraform.tfstate"
   }

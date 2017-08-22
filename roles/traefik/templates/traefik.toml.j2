@@ -2,7 +2,10 @@
 [entryPoints.http]
   address = ":80"
 
+[web]
+address = ":8080"
+
 [consulCatalog]
 prefix      = "traefik"
-constraints = ["tag==exposed"]
+constraints = [{{ traefik_consul_tags|map('regex_replace', '(.*)', '"tag==\g<1>"')|join(',') }}]
 # Matching with containers having this tag: "traefik.tags=api,helloworld"

@@ -13,3 +13,5 @@ traefik_user_name: "traefik"
 traefik_user_id: "802"
 
 traefik_network_interface: eth0
+
+traefik_consul_tags: []

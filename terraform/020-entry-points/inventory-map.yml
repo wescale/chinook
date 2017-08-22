@@ -1,6 +1,7 @@
 ---
 ansible_groups_to_tf_output:
   entry: entry_instance
+  entry_internal: entry_mon_instance
 
 layer_dependencies:
   landscape: "01-landscape"
