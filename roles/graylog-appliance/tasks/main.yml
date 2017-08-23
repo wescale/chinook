@@ -55,6 +55,11 @@
     state: started
     enabled: yes
 
+- template:
+    src: "graylog.consul-service.json.j2"
+    dest: "/etc/consul.d/graylog.consul-service.json"
+  notify: restart consul
+
 - name: configure graylog
   lineinfile:
     path: "/etc/graylog/server/server.conf"

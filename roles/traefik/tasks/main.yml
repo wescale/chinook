@@ -51,6 +51,11 @@
     mode: "0640"
   notify: restart traefik
 
+- template:
+    src: "dashboard.consul-service.json.j2"
+    dest: "/etc/consul.d/dashboard.consul-service.json"
+  notify: restart consul
+
 - name: at last traefik is made available
   service:
     name: "{{ traefik_user_name }}"

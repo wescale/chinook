@@ -1,0 +1,14 @@
+{
+  "service": {
+    "name": "traefik/graylog",
+    "tags": [
+        "traefik.frontend.entrypoints=http",
+        "traefik.frontend.backend=graylog",
+        "traefik.frontend.passHostHeader=true",
+        "traefik.frontend.rule=Host:graylog.{{ dns_internal_domain }}",
+        "traefik.backends.graylog.servers.{{ inventory_hostname }}.url=http://{{ ansible_default_ipv4.address }}:9000/",
+        "traefik.tags=internal"
+    ],
+    "port": 9000
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "service": {
+    "name": "traefik/{{ inventory_hostname }}-dashboard",
+    "tags": [
+        "traefik.frontend.entrypoints=http",
+        "traefik.frontend.backend=traefik_{{ inventory_hostname }}",
+        "traefik.frontend.passHostHeader=true",
+        "traefik.frontend.rule=Host:traefik.{{ inventory_hostname }}.{{ dns_internal_domain }}",
+        "traefik.backends.traefik_{{ inventory_hostname }}.servers.{{ inventory_hostname }}.url=http://{{ ansible_default_ipv4.address }}:8080/",
+        "traefik.tags=internal"
+    ],
+    "port": 8080
+  }
+}

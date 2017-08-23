@@ -15,7 +15,7 @@
 
     - name: wait for apt lock to be free
       shell:
-        fuser /var/lib/dpkg/lock
+        fuser /var/lib/dpkg/lock && fuser /var/lib/apt/lists
       failed_when: no
       changed_when: no
       register: apt_lock
