@@ -9,5 +9,6 @@ grafana_unarchive_creates: "{{ grafana_unarchive_dir }}/grafana-{{ grafana_versi
 
 grafana_archive_sum:
   4.3.2: "0c835229d1dcba43cbb79014ef0782edbd7b58d156a6aa2886a07bb52232666e"
+  4.4.3: "90d0c53f6a9edb5f6fb5acb58265a167ef41f5b06701301eafc30bafa28566dc"
 
 grafana_user: "grafana"

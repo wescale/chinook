@@ -1,13 +1,13 @@
 {
   "service": {
-    "name": "consul-ui",
+    "name": "traefik/consul-ui",
     "tags": [
         "traefik.frontend.entrypoints=http",
         "traefik.frontend.backend=consul",
         "traefik.frontend.passHostHeader=true",
-        "traefik.frontend.rule=Host:consul.chinook.aws.wescale.fr",
+        "traefik.frontend.rule=Host:consul-ui.{{ dns_internal_domain }}",
         "traefik.backends.consul.servers.{{ inventory_hostname }}.url=http://{{ ansible_default_ipv4.address }}:8500/",
-        "traefik.tags=exposed"
+        "traefik.tags=internal"
     ],
     "port": 8500
   }

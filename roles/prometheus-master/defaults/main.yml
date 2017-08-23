@@ -1,4 +1,4 @@
 ---
 ansible_cache_dir: "/tmp"
 
-prometheus_version: "1.6.3"
+prometheus_version: "1.7.1"

@@ -67,6 +67,7 @@
     group: "{{ consul_user_name }}"
     mode: "0640"
   notify: restart consul
+  when: consul_mode == 'server'
 
 - name: generate default variables
   template:
