@@ -20,3 +20,24 @@ consul_user_id: "801"
 consul_network_interface: eth0
 
 consul_mode: "node"
+
+consul_ansible_bootstrap_group_name: "consul-servers-bootstrap"
+
+consul_ansible_bootstrap_group: "{{ groups[consul_ansible_bootstrap_group_name] }}"
+
+consul_local_tls_dir: "{{ inventory_dir }}/../secrets/{{ project_name|lower }}/CA"
+consul_local_cluster_encrypt_key: "{{ playbook_dir }}/secrets/{{ project_name|lower }}/consul-encrypt.key"
+
+consul_cluster_encrypt_key: >-
+  {{ lookup(
+       'password',
+       consul_local_cluster_encrypt_key + ' chars=ascii_letters,digits,hexdigits,punctuation length=16'
+     )
+     |b64encode
+  }}
+
+consul_ca_data:
+  country: "FR"
+  state: "IDF"
+  locality: "Paris"
+  organization: "WeScale"

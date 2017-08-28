@@ -1,0 +1,72 @@
+---
+- name: create data directory
+  file:
+    path: "{{ consul_data_dir }}"
+    state: directory
+    mode: 0700
+    owner: "{{ consul_user_name }}"
+    group: "{{ consul_user_name }}"
+
+- name: create configuration directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0750
+    owner: root
+    group: "{{ consul_user_name }}"
+  with_items:
+    - "{{ consul_config_dir }}"
+    - "{{ consul_config_dir }}/ssl"
+
+- name: local certificates generation
+  include: generate_ca.yml
+  delegate_to: localhost
+  become: no
+  run_once: true
+
+- name: certificate upload
+  copy:
+    src: "{{ consul_local_tls_dir }}/"
+    dest: "{{ consul_config_dir }}/ssl/CA"
+    owner: root
+    group: consul
+  when: inventory_hostname in consul_ansible_bootstrap_group
+
+- name: certificate upload
+  copy:
+    src: "{{ consul_local_tls_dir }}/{{ item }}"
+    dest: "{{ consul_config_dir }}/ssl/{{ item }}"
+  with_items:
+    - ca.crt
+    - consul.key
+    - consul.crt
+
+- name: generate agent configuration
+  template:
+    src: "{{ consul_mode }}/config.json.j2"
+    dest: "{{ consul_config_dir }}/config.json"
+    owner: root
+    group: "{{ consul_user_name }}"
+    mode: 0640
+    validate: >-
+      consul validate %s
+  notify: restart consul
+
+- name: generate ui configuration for servers
+  template:
+    src: "{{ consul_mode }}/http.consul-service.json.j2"
+    dest: "{{ consul_config_dir }}/consul-ui.json"
+    group: "{{ consul_user_name }}"
+    mode: 0640
+    validate: >-
+      consul validate %s
+  notify: restart consul
+  when: consul_mode == 'server'
+
+- name: generate default variables
+  template:
+    src: "{{ consul_mode }}/defaults.j2"
+    dest: "/etc/default/consul"
+    group: "{{ consul_user_name }}"
+    mode: "0640"
+  notify: restart consul

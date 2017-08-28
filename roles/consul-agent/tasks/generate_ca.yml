@@ -1,0 +1,60 @@
+---
+- file:
+    path: "{{ consul_local_tls_dir }}"
+    state: directory
+
+- file:
+    path: "{{ consul_local_tls_dir }}/certindex"
+    state: touch
+  changed_when: false
+
+- name: create self-signed SSL CA cert
+  shell: >-
+    openssl req
+    -newkey rsa:4096
+    -nodes
+    -x509
+    -subj "/C={{ consul_ca_data.country }}/ST={{ consul_ca_data.state }}/L={{ consul_ca_data.locality }}/O={{ consul_ca_data.organization }}/CN=consul"
+    -days 3650
+    -out {{ consul_local_tls_dir }}/ca.crt
+  args:
+    chdir: "{{ consul_local_tls_dir }}"
+    creates: "{{ consul_local_tls_dir }}/ca.crt"
+
+- name: create wildcard cert signing
+  shell: >-
+    openssl req
+    -newkey rsa:4096
+    -nodes
+    -subj "/C={{ consul_ca_data.country }}/ST={{ consul_ca_data.state }}/L={{ consul_ca_data.locality }}/O={{ consul_ca_data.organization }}/CN=*.{{ project_region }}.compute.internal"
+    -out {{ consul_local_tls_dir }}/consul.csr
+    -keyout {{ consul_local_tls_dir }}/consul.key
+  args:
+    chdir: "{{ consul_local_tls_dir }}"
+    creates: "{{ consul_local_tls_dir }}/consul.csr"
+
+- name: copy wildcard conf
+  copy:
+    src: myca.conf
+    dest: "{{ consul_local_tls_dir }}/myca.conf"
+
+- stat:
+    path: "{{ consul_local_tls_dir }}/serial"
+  register: ca_serial
+
+- copy:
+    dest: "{{ consul_local_tls_dir }}/serial"
+    content: "0A"
+  when: not ca_serial.stat.exists
+
+- name: create wildcard cert signing
+  shell: >-
+    openssl ca
+    -batch
+    -notext
+    -in consul.csr
+    -out consul.crt
+    -config myca.conf
+  args:
+    chdir: "{{ consul_local_tls_dir }}"
+    creates: "{{ consul_local_tls_dir }}/consul.crt"

@@ -1,11 +1,12 @@
 ---
-project_name: "KIKI"
+project_name: "CHINOOK"
+
 project_region: "eu-west-1"
 
 ansible_user: admin
 
-
 secrets_dir: "{{ inventory_dir }}/../secrets"
 
-dns_public_domain: nomad.techx.fr
-dns_internal_domain: nomad-mon.techx.fr
+dns_public_domain: chinook.aws.wescale.fr
+
+dns_internal_domain: chinook-mon.aws.wescale.fr

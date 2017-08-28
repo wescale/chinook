@@ -1,0 +1,16 @@
+---
+- name: create system group
+  group:
+    name: "{{ consul_user_name }}"
+    gid: "{{ consul_user_id }}"
+    system: yes
+
+- name: create system user
+  user:
+    name: "{{ consul_user_name }}"
+    group: "{{ consul_user_name }}"
+    uid: "{{ consul_user_id }}"
+    home: "{{ consul_data_dir }}"
+    shell: "/usr/sbin/nologin"
+    createhome: no
+    system: yes

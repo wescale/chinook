@@ -38,3 +38,17 @@ Masters hold Consul and Nomad Server. Workers hold Nomad nodes.
 For now, to reach services, you need to forward remote ports locally via ssh.
 
 Have fun. Hack in peace.
+
+switch to new environment :
+
+* change vars in group_vars/all.yml
+* change vars in 020-entry-points/terraform.tfvars
+
+
+
+
+    Non-members getting access to data
+    Cluster state manipulation due to malicious messages
+    Fake data generation due to malicious messages
+    Tampering causing state corruption
+    Denial of Service against a node

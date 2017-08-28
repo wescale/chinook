@@ -1,0 +1,10 @@
+---
+consul_binary_basedir: "/usr/local/bin"
+consul_binary_path: "{{ consul_binary_basedir }}/consul"
+consul_https_port: 8501
+consul_ui_service_name: consul-ui
+
+consul_ui_traefik_backend_server: >-
+  traefik.backends.{{ consul_ui_service_name }}.servers.{{ inventory_hostname }}
+consul_ui_frontend_rule: >-
+  Host:{{ consul_ui_service_name }}.{{ dns_internal_domain }}

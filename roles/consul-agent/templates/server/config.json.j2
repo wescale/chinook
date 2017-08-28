@@ -1,0 +1,30 @@
+{% set comma = joiner(",") %}
+{
+    "server": {{ (consul_mode == 'server')|lower }},
+    "datacenter": "{{ consul_dc_name }}",
+    "data_dir": "{{ consul_data_dir }}",
+    "log_level": "INFO",
+    "enable_syslog": true,
+    "disable_remote_exec": true,
+
+    "encrypt": "{{ consul_cluster_encrypt_key }}",
+    "ca_file": "/etc/consul.d/ssl/ca.crt",
+    "cert_file": "/etc/consul.d/ssl/consul.crt",
+    "key_file": "/etc/consul.d/ssl/consul.key",
+    "verify_incoming": true,
+    "verify_outgoing": true,
+
+    "ports": {
+        "https": {{ consul_https_port }},
+        "http": -1
+    },
+
+    "start_join": [
+    {%- for host in consul_ansible_bootstrap_group -%}
+    {{ comma() }}"{{ hostvars[host]['ansible_'+consul_network_interface]['ipv4']['address'] }}"
+    {%- endfor -%}
+    ],
+    "addresses": {
+        "https": "{{ ansible_default_ipv4.address }}"
+    }
+}

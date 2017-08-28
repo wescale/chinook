@@ -1,5 +1,0 @@
----
-- hosts: bastions
-  become: yes
-  roles:
-    - docker
