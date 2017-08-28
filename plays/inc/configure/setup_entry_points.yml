@@ -1,18 +1,7 @@
 ---
 - hosts: all
 
-- hosts: entry
+- hosts: entry:entry_internal
   become: yes
   roles:
     - role: traefik
-      vars:
-        traefik_consul_tags:
-          - public
-
-- hosts: entry_internal
-  become: yes
-  roles:
-    - role: traefik
-      vars:
-        traefik_consul_tags:
-          - internal

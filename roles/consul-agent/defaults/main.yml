@@ -26,7 +26,7 @@ consul_ansible_bootstrap_group_name: "consul-servers-bootstrap"
 consul_ansible_bootstrap_group: "{{ groups[consul_ansible_bootstrap_group_name] }}"
 
 consul_local_tls_dir: "{{ inventory_dir }}/../secrets/{{ project_name|lower }}/CA"
-consul_local_cluster_encrypt_key: "{{ playbook_dir }}/secrets/{{ project_name|lower }}/consul-encrypt.key"
+consul_local_cluster_encrypt_key: "{{ inventory_dir }}/../secrets/{{ project_name|lower }}/consul-encrypt.key"
 
 consul_cluster_encrypt_key: >-
   {{ lookup(

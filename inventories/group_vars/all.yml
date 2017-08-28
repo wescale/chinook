@@ -10,3 +10,5 @@ secrets_dir: "{{ inventory_dir }}/../secrets"
 dns_public_domain: chinook.aws.wescale.fr
 
 dns_internal_domain: chinook-mon.aws.wescale.fr
+
+graylog_input_syslogudp_port: 5001

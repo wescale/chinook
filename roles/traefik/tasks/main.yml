@@ -40,7 +40,7 @@
     dest: "/etc/rsyslog.d/consul.conf"
     mode: "0644"
     content: |-
-      :programname, isequal, "traefik" @@{{ hostvars[groups['logstores'][0]].ansible_default_ipv4.address }}:5140;RSYSLOG_SyslogProtocol23Format
+      :programname, isequal, "traefik" @{{ hostvars[groups['logstores'][0]].ansible_default_ipv4.address }}:{{ graylog_input_syslogudp_port}};RSYSLOG_SyslogProtocol23Format
       & stop
   notify: restart rsyslog
 
