@@ -11,7 +11,7 @@
     dest: "/etc/rsyslog.d/consul.conf"
     mode: "0640"
     content: |-
-      :programname, isequal, "consul" @{{ hostvars[groups['logstores'][0]].ansible_default_ipv4.address }}:{{ graylog_input_syslogudp_port}};RSYSLOG_SyslogProtocol23Format
+      :programname, isequal, "consul" {{ graylog_udp_destination }}
       & stop
   notify: restart rsyslog
 

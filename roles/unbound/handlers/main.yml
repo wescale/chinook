@@ -4,3 +4,9 @@
     name: unbound
     state: restarted
     enabled: true
+
+- name: restart networking
+  service:
+    name: networking
+    state: restarted
+    enabled: true

@@ -3,7 +3,7 @@
   gather_facts: no
   become: yes
 
-  tasks:
+  pre_tasks:
     - name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
       become: no
       wait_for:
@@ -24,3 +24,6 @@
       delay: 10
 
     - setup:
+
+  roles:
+    - seed

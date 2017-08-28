@@ -9,7 +9,6 @@
         update_cache: yes
 
   roles:
-    - seed
     - consul-agent
     - unbound
     - prometheus-node

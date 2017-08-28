@@ -1,5 +1,6 @@
 ---
 - include: "{{ playbook_dir }}/inc/team_up.yml"
+  tags: team_up
 
 - include: "{{ playbook_dir }}/inc/configure/setup_all.yml"
 
