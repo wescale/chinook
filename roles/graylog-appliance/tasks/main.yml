@@ -69,3 +69,5 @@
       {{ item.conf_key }} = {{ item.conf_value }}
   with_items: "{{ graylog_appliance_conf }}"
   notify: restart graylog
+
+- meta: flush_handlers
