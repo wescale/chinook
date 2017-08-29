@@ -21,8 +21,8 @@ job "betamax" {
         "traefik.frontend.backend=${NOMAD_JOB_NAME}",
         "traefik.frontend.passHostHeader=true",
         "traefik.frontend.rule=Host:${NOMAD_JOB_NAME}.chinook.aws.wescale.fr",
-        "traefik.backends.grafana-priv.servers.server1.url=http://${NOMAD_ADDR_web}/",
-        "traefik.tags=dashboard"
+        "traefik.backends.${NOMAD_JOB_NAME}.servers.${NOMAD_JOB_NAME}_0.url=http://${NOMAD_ADDR_web}/",
+        "traefik.tags=public"
       ]
 
       check {

@@ -1,0 +1,10 @@
+---
+- hosts: bastions:masters
+  become: yes
+  tasks:
+    - authorized_key:
+        user: "{{ ansible_user }}"
+        key: "{{ lookup('file', secrets_dir+'/public_keys/'+item+'.rsa.pub') }}"
+        state: present
+      with_items:
+        - plopez
