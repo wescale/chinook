@@ -21,3 +21,5 @@ Sébastien cas appli
 
 Testers: Micka & Maxence
 
+* solution TCP-only exposure
+* cleanup security groups
