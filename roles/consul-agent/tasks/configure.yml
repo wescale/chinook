@@ -18,6 +18,8 @@
     - "{{ consul_config_dir }}"
     - "{{ consul_config_dir }}/tls"
 
+- set_fact:
+    consul_node_tls_workdir: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}"
 
 - name: local certificates generation
   include: local_ca_certificate.yml
@@ -47,10 +49,11 @@
 
 - fetch:
     src: "{{ consul_config_dir }}/tls/consul-node.csr"
-    dest: "{{ consul_local_tls_dir }}"
+    flat: yes
+    dest: "{{ consul_node_tls_workdir }}/consul-node.csr"
 
 - file:
-    path: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}/etc/consul.d/tls/consul-node.cer.index"
+    path: "{{ consul_node_tls_workdir }}/consul-node.cer.index"
     state: touch
   changed_when: false
   delegate_to: localhost
@@ -59,18 +62,18 @@
 - name: generate consulca node-specific conf
   template:
     src: consulca.conf.j2
-    dest: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}/etc/consul.d/tls/consulca.conf"
+    dest: "{{ consul_node_tls_workdir }}/consulca.conf"
   delegate_to: localhost
   become: no
 
 - stat:
-    path: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}/etc/consul.d/tls/consul-node.cer.serial"
+    path: "{{ consul_node_tls_workdir }}/consul-node.cer.serial"
   register: node_ca_serial
   delegate_to: localhost
   become: no
 
 - copy:
-    dest: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}/etc/consul.d/tls/consul-node.cer.serial"
+    dest: "{{ consul_node_tls_workdir }}/consul-node.cer.serial"
     content: "0A"
   when: not node_ca_serial.stat.exists
   delegate_to: localhost
@@ -78,20 +81,15 @@
 
 - name: create node specific signed cert
   shell: >-
-    openssl ca
-    -batch
-    -notext
-    -in consul-node.csr
-    -out consul-node.cer
-    -config consulca.conf
+    openssl ca -batch -notext -in consul-node.csr -out consul-node.cer -config consulca.conf
   args:
-    chdir: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}/etc/consul.d/tls"
-    creates: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}/etc/consul.d/tls/consul-node.cer"
+    chdir: "{{ consul_node_tls_workdir }}"
+    creates: "{{ consul_node_tls_workdir }}/consul-node.cer"
   delegate_to: localhost
   become: no
 
 - copy:
-    src: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}/etc/consul.d/tls/consul-node.cer"
+    src: "{{ consul_node_tls_workdir }}/consul-node.cer"
     dest: "{{ consul_config_dir }}/tls/consul-node.cer"
     owner: root
     group: "{{ consul_user_name }}"
