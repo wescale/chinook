@@ -4,6 +4,7 @@ Host *
   ControlMaster   auto
   ControlPath     ~/.ssh/chinook-%r@%h:%p
   ControlPersist  5m
+  StrictHostKeyChecking no
 
 {% for cidr_bastion in tfoutput_cidr_to_tfoutput_bastion.items() %}
 Host {{ tf_outputs[cidr_bastion[0]].value | regex_replace('(\.0)+\/[1-9]{2}','.*') }}
