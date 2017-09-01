@@ -1,16 +1,30 @@
 ---
-- apt_key:
+- assert:
+    that:
+      - graylog_admin_password is defined
+      - graylog_server_salt is defined
+    msg: >-
+      'graylog_server_salt' and 'graylog_admin_password' variables must be defined.
+
+- name: add elasticsearch project repository key
+  apt_key:
     url: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
     state: present
 
-- apt_repository:
+- name: add elasticsearch project repository
+  apt_repository:
     repo: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
     filename: "elastic-5.x"
     update_cache: yes
 
+- name: add graylog project repository
+  apt:
+    deb: "https://packages.graylog2.org/repo/packages/graylog-2.3-repository_latest.deb"
+
 - apt:
     name: "{{ item }}"
     state: present
+    update_cache: yes
   with_items:
     - "ca-certificates-java"
     - "apt-transport-https"
@@ -19,8 +33,10 @@
     - "pwgen"
     - "mongodb-server"
     - "elasticsearch"
+    - "graylog-server"
 
-- lineinfile:
+- name: dedicate elasticsearch instance to graylog
+  lineinfile:
     path: "/etc/elasticsearch/elasticsearch.yml"
     regexp: >-
       ^cluster.name: .*$
@@ -28,34 +44,17 @@
       cluster.name: graylog
   notify: restart elasticsearch
 
-- name: enable elasticsearch
+- name: enable graylog services
   systemd:
-    name: "elasticsearch"
+    name: "{{ item }}"
     state: started
     enabled: yes
+  with_items:
+    - "elasticsearch"
+    - "graylog-server"
 
-- name: install graylog project repository
-  apt:
-    deb: "https://packages.graylog2.org/repo/packages/graylog-2.3-repository_latest.deb"
-
-- apt:
-    name: "graylog-server"
-    state: present
-    update_cache: yes
-
-- set_fact:
-    graylog_server_salt: >-
-      {{ lookup('password', secrets_dir+'/graylog_server_salt chars=ascii_letters,digits,hexdigits,punctuation length=64') }}
-    graylog_admin_password: >-
-      {{ lookup('password', secrets_dir+'/graylog_admin_password chars=ascii_letters,digits,hexdigits,punctuation length=64') }}
-
-- name: enable graylog
-  systemd:
-    name: "graylog-server"
-    state: started
-    enabled: yes
-
-- template:
+- name: declare graylog webapp to consul
+  template:
     src: "graylog.consul-service.json.j2"
     dest: "/etc/consul.d/graylog.consul-service.json"
   notify: restart consul

@@ -1,4 +1,6 @@
 ---
+- hosts: all
+
 - hosts: logstores
   become: yes
 
@@ -22,21 +24,21 @@
     - graylog-appliance
 
   tasks:
-    - name: Wait for Graylog server to startup
+    - name: wait for Graylog server to startup
       wait_for:
         host: "{{ ansible_default_ipv4.address }}"
         port: 9000
         timeout: 60
       delegate_to: logstores_0
 
-    - set_fact:
-        graylog_root_passwd: "{{ lookup('file', secrets_dir+'/graylog_admin_password') }}"
-
     - name: get rest token
       uri:
-        url: http://{{ ansible_default_ipv4.address }}:9000/api/system/sessions
+        url: "http://{{ ansible_default_ipv4.address }}:9000/api/system/sessions"
         method: POST
-        body: '{"username":"admin", "password":"{{ graylog_root_passwd }}", "host":""}'
+        body:
+          username: admin
+          password: "{{ graylog_admin_password }}"
+          host: ""
         body_format: json
       register: token
 

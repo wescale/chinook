@@ -1,0 +1,5 @@
+---
+graylog_server_salt: >-
+  {{ lookup('password', secrets_dir+'/graylog_server_salt chars=ascii_letters,digits,hexdigits,punctuation length=64') }}
+graylog_admin_password: >-
+  {{ lookup('password', secrets_dir+'/graylog_admin_password chars=ascii_letters,digits,hexdigits,punctuation length=64') }}

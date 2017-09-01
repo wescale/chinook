@@ -3,7 +3,6 @@
   become: yes
 
   pre_tasks:
-
     - apt_repository:
         repo: "deb http://httpredir.debian.org/debian stretch-backports main contrib non-free"
         update_cache: yes
@@ -11,6 +10,6 @@
   roles:
     - unbound
     - consul-agent
-#    - prometheus-node
+    - prometheus-node
 
 
