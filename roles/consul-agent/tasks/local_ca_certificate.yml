@@ -3,7 +3,6 @@
     path: "{{ consul_local_tls_dir }}"
     state: directory
 
-
 - name: generate root certificate for dc
   shell: >-
     openssl req

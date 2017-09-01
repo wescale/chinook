@@ -20,19 +20,15 @@
 
 
 - name: local certificates generation
-  include: generate_ca_v2.yml
+  include: local_ca_certificate.yml
   delegate_to: localhost
   become: no
   run_once: true
 
 - name: certificate upload
   copy:
-    src: "{{ consul_local_tls_dir }}/{{ item }}"
-    dest: "{{ consul_config_dir }}/tls/{{ item }}"
-  with_items:
-    - consul-root.cer
-
-
+    src: "{{ consul_local_tls_dir }}/consul-root.cer"
+    dest: "{{ consul_config_dir }}/tls/consul-root.cer"
 
 - name: create node cert signing
   shell: >-
@@ -43,7 +39,7 @@
     -out {{ consul_config_dir }}/tls/consul-node.csr
     -keyout {{ consul_config_dir }}/tls/consul-node.key
     && chown root:{{ consul_user_name}} *
-    && chmod 750 *
+    && chmod 640 *
   args:
     warn: no
     chdir: "{{ consul_config_dir }}/tls"
@@ -60,7 +56,7 @@
   delegate_to: localhost
   become: no
 
-- name: copy wildcard conf
+- name: generate consulca node-specific conf
   template:
     src: consulca.conf.j2
     dest: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}/etc/consul.d/tls/consulca.conf"
@@ -80,7 +76,7 @@
   delegate_to: localhost
   become: no
 
-- name: create wildcard cert signing
+- name: create node specific signed cert
   shell: >-
     openssl ca
     -batch
@@ -99,8 +95,7 @@
     dest: "{{ consul_config_dir }}/tls/consul-node.cer"
     owner: root
     group: "{{ consul_user_name }}"
-    mode: 0750
-
+    mode: 0640
 
 - name: generate agent configuration
   template:
