@@ -11,3 +11,5 @@
 - include: configure.yml
 
 - include: sys_integration.yml
+
+- meta: flush_handlers

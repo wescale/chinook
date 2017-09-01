@@ -16,7 +16,91 @@
     group: "{{ consul_user_name }}"
   with_items:
     - "{{ consul_config_dir }}"
-    - "{{ consul_config_dir }}/services"
+    - "{{ consul_config_dir }}/tls"
+
+
+- name: local certificates generation
+  include: generate_ca_v2.yml
+  delegate_to: localhost
+  become: no
+  run_once: true
+
+- name: certificate upload
+  copy:
+    src: "{{ consul_local_tls_dir }}/{{ item }}"
+    dest: "{{ consul_config_dir }}/tls/{{ item }}"
+  with_items:
+    - consul-root.cer
+
+
+
+- name: create node cert signing
+  shell: >-
+    openssl req
+    -newkey rsa:4096
+    -nodes
+    -subj "{{ consul_node_cert_subj }}"
+    -out {{ consul_config_dir }}/tls/consul-node.csr
+    -keyout {{ consul_config_dir }}/tls/consul-node.key
+    && chown root:{{ consul_user_name}} *
+    && chmod 750 *
+  args:
+    warn: no
+    chdir: "{{ consul_config_dir }}/tls"
+    creates: "{{ consul_config_dir }}/tls/consul-node.csr"
+
+- fetch:
+    src: "{{ consul_config_dir }}/tls/consul-node.csr"
+    dest: "{{ consul_local_tls_dir }}"
+
+- file:
+    path: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}/etc/consul.d/tls/consul-node.cer.index"
+    state: touch
+  changed_when: false
+  delegate_to: localhost
+  become: no
+
+- name: copy wildcard conf
+  template:
+    src: consulca.conf.j2
+    dest: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}/etc/consul.d/tls/consulca.conf"
+  delegate_to: localhost
+  become: no
+
+- stat:
+    path: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}/etc/consul.d/tls/consul-node.cer.serial"
+  register: node_ca_serial
+  delegate_to: localhost
+  become: no
+
+- copy:
+    dest: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}/etc/consul.d/tls/consul-node.cer.serial"
+    content: "0A"
+  when: not node_ca_serial.stat.exists
+  delegate_to: localhost
+  become: no
+
+- name: create wildcard cert signing
+  shell: >-
+    openssl ca
+    -batch
+    -notext
+    -in consul-node.csr
+    -out consul-node.cer
+    -config consulca.conf
+  args:
+    chdir: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}/etc/consul.d/tls"
+    creates: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}/etc/consul.d/tls/consul-node.cer"
+  delegate_to: localhost
+  become: no
+
+- copy:
+    src: "{{ consul_local_tls_dir }}/{{ inventory_hostname }}/etc/consul.d/tls/consul-node.cer"
+    dest: "{{ consul_config_dir }}/tls/consul-node.cer"
+    owner: root
+    group: "{{ consul_user_name }}"
+    mode: 0750
+
 
 - name: generate agent configuration
   template:
@@ -32,7 +116,7 @@
 - name: generate ui configuration for servers
   template:
     src: "{{ consul_mode }}/http.consul-service.json.j2"
-    dest: "{{ consul_config_dir }}/services/consul-ui.json"
+    dest: "{{ consul_config_dir }}/service-ui.json"
     group: "{{ consul_user_name }}"
     mode: 0640
     validate: >-

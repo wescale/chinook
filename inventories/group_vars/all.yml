@@ -5,7 +5,7 @@ project_region: "eu-west-1"
 
 ansible_user: admin
 
-secrets_dir: "{{ inventory_dir }}/../secrets"
+secrets_dir: "{{ inventory_dir }}/../secrets/{{ project_name|lower }}-{{ project_region }}"
 
 dns_public_domain: chinook.aws.wescale.fr
 
@@ -15,3 +15,4 @@ graylog_input_syslogudp_port: 5001
 
 graylog_udp_destination: >-
   @{{ hostvars[groups['logstores'][0]].ansible_default_ipv4.address }}:{{ graylog_input_syslogudp_port}};RSYSLOG_SyslogProtocol23Format
+

@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+    - hostname:
+        name: "{{ inventory_hostname }}"
+    - shell: reboot
+      async: 0
+      poll: 0

@@ -9,8 +9,8 @@
         update_cache: yes
 
   roles:
-    - consul-agent
     - unbound
-    - prometheus-node
+    - consul-agent
+#    - prometheus-node
 
 

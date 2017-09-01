@@ -25,8 +25,8 @@ consul_ansible_bootstrap_group_name: "consul-servers-bootstrap"
 
 consul_ansible_bootstrap_group: "{{ groups[consul_ansible_bootstrap_group_name] }}"
 
-consul_local_tls_dir: "{{ inventory_dir }}/../secrets/{{ project_name|lower }}/CA"
-consul_local_cluster_encrypt_key: "{{ inventory_dir }}/../secrets/{{ project_name|lower }}/consul-encrypt.key"
+consul_local_tls_dir: "{{ secrets_dir }}/consul/tls"
+consul_local_cluster_encrypt_key: "{{ secrets_dir }}/consul/encrypt.key"
 
 consul_cluster_encrypt_key: >-
   {{ lookup(
@@ -41,3 +41,18 @@ consul_ca_data:
   state: "IDF"
   locality: "Paris"
   organization: "WeScale"
+
+consul_ca_info:
+  C: "FR"
+  ST: "IDF"
+  L: "Paris"
+  O: "WeScale"
+
+consul_root_cert_subj: >-
+  {% for key in consul_ca_info %}/{{ key }}={{ consul_ca_info[key] }}{% endfor %}/CN={{ consul_dc_name }}.consul
+
+consul_wild_cert_subj: >-
+  {% for key in consul_ca_info %}/{{ key }}={{ consul_ca_info[key] }}{% endfor %}/CN=*.node.{{ consul_dc_name }}.consul
+
+consul_node_cert_subj: >-
+  {% for key in consul_ca_info %}/{{ key }}={{ consul_ca_info[key] }}{% endfor %}/CN={{ inventory_hostname }}.node.{{ consul_dc_name }}.consul

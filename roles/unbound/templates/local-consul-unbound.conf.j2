@@ -3,7 +3,7 @@ server:
  logfile: /var/log/unbound/unbound.log
 
  # Consul does not support DNSSEC
- domain-insecure: "consul"
+ domain-insecure: "{{ consul_dc_name }}.consul"
  do-ip4: yes
  do-ip6: no
  do-udp: yes
@@ -18,5 +18,5 @@ server:
  do-not-query-localhost: no
 
 stub-zone:
-  name: "consul"
+  name: "{{ consul_dc_name }}.consul"
   stub-addr: "127.0.0.1@8600"

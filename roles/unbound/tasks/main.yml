@@ -22,10 +22,17 @@
       prepend domain-name-servers 127.0.0.1;
   notify: restart networking
 
+- file:
+    path: "/var/log/unbound"
+    state: directory
+    owner: unbound
+    group: unbound
+    mode: 0750
+  notify: restart unbound
+
 - service:
     name: unbound
     state: started
     enabled: true
 
 - meta: flush_handlers
-
