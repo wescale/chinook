@@ -108,7 +108,7 @@
 
 - name: generate ui configuration for servers
   template:
-    src: "{{ consul_mode }}/http.consul-service.json.j2"
+    src: "{{ consul_mode }}/consul-service-ui.json.j2"
     dest: "{{ consul_config_dir }}/service-ui.json"
     group: "{{ consul_user_name }}"
     mode: 0640

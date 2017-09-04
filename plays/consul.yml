@@ -2,18 +2,72 @@
 - hosts: masters
   become: yes
 
+  vars:
+    consul_acl_master_token: b1gs33cr3t
+
   tasks:
-    - pip:
-        name: python-consul
+    - service:
+        name: consul
+        state: restarted
 
-    - name: add or update the value associated with a key in the key/value store
-      consul_kv:
-        key: traefik/defaultEntryPoints
-        value: http
+    - template:
+        src: templates/config-acl.json.j2
+        dest: /etc/consul.d/config-acl.json
+        owner: root
+        group: consul
+        mode: 0640
+      notify: restart consul
 
-    - consul_kv:
-        key: traefik/entryPoints/entryPoints.http/address
-        value: ":80"
-    - consul_kv:
-        key: traefik/web/address
-        value: ":8080"
+    - meta: flush_handlers
+
+    - uri:
+        url : "http://127.0.0.1:8500/v1/acl/create"
+        return_content: yes
+        method: PUT
+        headers:
+          X-Consul-Token: "{{ consul_acl_master_token }}"
+        body_format: json
+        body:
+          Name: "Agent token"
+          Type: "client"
+          Rules: >-
+            node "" { policy = "write" }
+            service "" { policy = "write" }
+            session "" { policy = "write" }
+            event "" { policy = "write" }
+      register: agent_token
+
+    - name: update
+      uri:
+        url : "http://127.0.0.1:8500/v1/acl/update"
+        return_content: yes
+        method: PUT
+        headers:
+          X-Consul-Token: "{{ consul_acl_master_token }}"
+        body_format: json
+        body:
+          ID: "anonymous"
+          Type: "client"
+          Rules: >-
+            node "" { policy = "read" }
+      register: agent_token
+
+
+
+
+    - set_fact:
+        consul_acl_agent_token: "{{ agent_token.json.ID }}"
+
+    - template:
+        src: templates/config-acl.json.j2
+        dest: /etc/consul.d/config-acl.json
+        owner: root
+        group: consul
+        mode: 0640
+      notify: restart consul
+
+  handlers:
+    - name: restart consul
+      service:
+        name: consul
+        state: restarted
