@@ -1,5 +1,5 @@
 ---
-- name: install 'unzip' command
+- name: install unzip package
   package:
     name: "unzip"
     state: present
@@ -29,4 +29,3 @@
     owner: root
     group: "{{ consul_user_name }}"
     mode: 0750
-    

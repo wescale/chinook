@@ -24,8 +24,8 @@
 - name: local certificates generation
   include: local_ca_certificate.yml
   delegate_to: localhost
-  become: no
   run_once: true
+  become: no
 
 - name: certificate upload
   copy:
@@ -74,16 +74,6 @@
     mode: 0640
     validate: consul validate %s
   notify: restart consul
-
-- name: generate ui configuration for servers
-  template:
-    src: "{{ consul_mode }}/consul-service-ui.json.j2"
-    dest: "{{ consul_config_dir }}/service-ui.json"
-    group: "{{ consul_user_name }}"
-    mode: 0640
-    validate: consul validate %s
-  notify: restart consul
-  when: consul_mode == 'server'
 
 - name: generate default variables
   template:

@@ -1,5 +1,5 @@
 ---
-consul_cache_dir: "/var/cache/run"
+consul_cache_dir: "/var/cache/ansible"
 
 consul_version: "0.9.2"
 consul_archive_sum: "0a2921fc7ca7e4702ef659996476310879e50aeeecb5a205adfdbe7bd8524013"

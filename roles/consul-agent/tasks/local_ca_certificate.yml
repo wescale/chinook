@@ -7,10 +7,8 @@
   shell: >-
     openssl req
     -newkey rsa:4096
-    -nodes
-    -x509
+    -nodes -x509 -days 3650
     -subj "{{ consul_root_cert_subj }}"
-    -days 3650
     -out {{ consul_local_tls_dir }}/consul-root.cer
     -keyout {{ consul_local_tls_dir }}/consul-root-key.pem
   args:
