@@ -47,44 +47,14 @@
     chdir: "{{ consul_config_dir }}/tls"
     creates: "{{ consul_config_dir }}/tls/consul-node.csr"
 
-- fetch:
+- name: get certificate signing request
+  fetch:
     src: "{{ consul_config_dir }}/tls/consul-node.csr"
-    flat: yes
     dest: "{{ consul_node_tls_workdir }}/consul-node.csr"
+    flat: yes
 
-- file:
-    path: "{{ consul_node_tls_workdir }}/consul-node.cer.index"
-    state: touch
-  changed_when: false
-  delegate_to: localhost
-  become: no
-
-- name: generate consulca node-specific conf
-  template:
-    src: consulca.conf.j2
-    dest: "{{ consul_node_tls_workdir }}/consulca.conf"
-  delegate_to: localhost
-  become: no
-
-- stat:
-    path: "{{ consul_node_tls_workdir }}/consul-node.cer.serial"
-  register: node_ca_serial
-  delegate_to: localhost
-  become: no
-
-- copy:
-    dest: "{{ consul_node_tls_workdir }}/consul-node.cer.serial"
-    content: "0A"
-  when: not node_ca_serial.stat.exists
-  delegate_to: localhost
-  become: no
-
-- name: create node specific signed cert
-  shell: >-
-    openssl ca -batch -notext -in consul-node.csr -out consul-node.cer -config consulca.conf
-  args:
-    chdir: "{{ consul_node_tls_workdir }}"
-    creates: "{{ consul_node_tls_workdir }}/consul-node.cer"
+- name: local node certificate generation
+  include: local_node_certificate.yml
   delegate_to: localhost
   become: no
 
@@ -102,8 +72,7 @@
     owner: root
     group: "{{ consul_user_name }}"
     mode: 0640
-    validate: >-
-      consul validate %s
+    validate: consul validate %s
   notify: restart consul
 
 - name: generate ui configuration for servers
@@ -112,8 +81,7 @@
     dest: "{{ consul_config_dir }}/service-ui.json"
     group: "{{ consul_user_name }}"
     mode: 0640
-    validate: >-
-      consul validate %s
+    validate: consul validate %s
   notify: restart consul
   when: consul_mode == 'server'
 
@@ -122,5 +90,5 @@
     src: "{{ consul_mode }}/defaults.j2"
     dest: "/etc/default/consul"
     group: "{{ consul_user_name }}"
-    mode: "0640"
+    mode: 0640
   notify: restart consul

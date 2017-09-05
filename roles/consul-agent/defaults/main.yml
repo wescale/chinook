@@ -21,8 +21,6 @@ consul_network_interface: eth0
 
 consul_mode: "node"
 
-consul_ansible_bootstrap_group_name: "consul-servers-bootstrap"
-
 consul_ansible_bootstrap_group: "{{ groups[consul_ansible_bootstrap_group_name] }}"
 
 consul_local_tls_dir: "{{ secrets_dir }}/consul/tls"
@@ -53,3 +51,5 @@ consul_root_cert_subj: >-
 
 consul_node_cert_subj: >-
   {% for key in consul_ca_info %}/{{ key }}={{ consul_ca_info[key] }}{% endfor %}/CN={{ inventory_hostname }}.node.{{ consul_dc_name }}.consul
+
+consul_log_dest: "/var/log/consul.log"
