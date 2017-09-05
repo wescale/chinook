@@ -51,8 +51,5 @@ consul_ca_info:
 consul_root_cert_subj: >-
   {% for key in consul_ca_info %}/{{ key }}={{ consul_ca_info[key] }}{% endfor %}/CN={{ consul_dc_name }}.consul
 
-consul_wild_cert_subj: >-
-  {% for key in consul_ca_info %}/{{ key }}={{ consul_ca_info[key] }}{% endfor %}/CN=*.node.{{ consul_dc_name }}.consul
-
 consul_node_cert_subj: >-
   {% for key in consul_ca_info %}/{{ key }}={{ consul_ca_info[key] }}{% endfor %}/CN={{ inventory_hostname }}.node.{{ consul_dc_name }}.consul

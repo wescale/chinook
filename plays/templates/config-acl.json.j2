@@ -4,7 +4,7 @@
   "acl_master_token": "{{ consul_acl_master_token }}",
 {% endif %}
 {% if consul_acl_agent_token is defined %}
-  "acl_agent_token": "{{ consul_acl_agent_token }}",
+  "acl_token": "{{ consul_acl_agent_token }}",
 {% endif %}
   "acl_down_policy": "extend-cache",
   "acl_default_policy": "deny"
