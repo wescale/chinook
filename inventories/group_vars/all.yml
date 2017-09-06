@@ -18,3 +18,8 @@ graylog_udp_destination: >-
 
 
 consul_ansible_bootstrap_group_name: "consul-servers-bootstrap"
+
+consul_acl_policy: >-
+  agent "{{ inventory_hostname }}" { policy = "read" }
+  node "{{ inventory_hostname }}" { policy = "write" }
+  node "" { policy = "read" }

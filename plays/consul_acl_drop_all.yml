@@ -1,0 +1,42 @@
+- hosts: all
+  become: yes
+
+  vars:
+    consul_acl_master_token: b1gs33cr3t
+    consul_default_acl_policy: >-
+      agent "{{ inventory_hostname }}" { policy = "read" }
+      node "{{ inventory_hostname }}" { policy = "write" }
+      node "" { policy = "read" }
+    acl_refresh: true
+
+  tasks:
+    - template:
+        src: templates/config-acl.json.j2
+        dest: /etc/consul.d/config-acl.json
+        owner: root
+        group: consul
+        mode: 0640
+      notify: restart consul
+
+    - meta: flush_handlers
+
+    - name: read current token-policy list
+      uri:
+        url : "http://127.0.0.1:8500/v1/acl/list"
+        return_content: yes
+        method: PUT
+        headers:
+          X-Consul-Token: "{{ consul_acl_master_token }}"
+      delegate_to: "{{ groups[consul_ansible_bootstrap_group_name][0] }}"
+      run_once: yes
+      register: acl_list_response
+
+    - name: delete old token-policy couple
+      uri:
+        url : "http://127.0.0.1:8500/v1/acl/destroy/{{ item }}"
+        method: PUT
+        headers:
+          X-Consul-Token: "{{ consul_acl_master_token }}"
+      delegate_to: "{{ groups[consul_ansible_bootstrap_group_name][0] }}"
+      run_once: yes
+      with_items: "{{ acl_list_response.json|map(attribute='ID')|list }}"

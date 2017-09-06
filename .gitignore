@@ -11,6 +11,7 @@ roles/seed
 *.tfstate.backup
 *.tfstate
 inventories/*.inventory
+inventories/host_vars/*
 ssh.cfg
 plays/graylog-server-salt
 backup

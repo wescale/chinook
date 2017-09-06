@@ -4,6 +4,11 @@
 
   vars:
     consul_acl_master_token: b1gs33cr3t
+    consul_default_acl_policy: >-
+      agent "{{ inventory_hostname }}" { policy = "read" }
+      node "{{ inventory_hostname }}" { policy = "write" }
+      node "" { policy = "read" }
+    acl_refresh: true
 
   tasks:
     - template:
@@ -16,26 +21,66 @@
 
     - meta: flush_handlers
 
-    - uri:
-        url : "http://127.0.0.1:8500/v1/acl/create"
-        return_content: yes
-        method: PUT
-        headers:
-          X-Consul-Token: "{{ consul_acl_master_token }}"
-        body_format: json
-        body:
-          Name: "Agent token"
-          Type: "client"
-          Rules: >-
-            agent "{{ inventory_hostname }}" { policy = "read" }
-            node "{{ inventory_hostname }}" { policy = "write" }
-            node "" { policy = "read" }
-      delegate_to: "{{ groups[consul_ansible_bootstrap_group_name][0] }}"
-      register: agent_token
+    - block:
+        - name: read current token-policy couple
+          uri:
+            url : "http://127.0.0.1:8500/v1/acl/info/{{ consul_acl_token }}"
+            return_content: yes
+            method: PUT
+            headers:
+              X-Consul-Token: "{{ consul_acl_master_token }}"
+          delegate_to: "{{ groups[consul_ansible_bootstrap_group_name][0] }}"
+          register: agent_token_response
 
-    - debug:
-        var: agent_token
-      when: consul_acl_agent_token is not defined
+        - set_fact:
+            acl_refresh: "{{ consul_acl_policy != agent_token_response.json[0].Rules }}"
+      when: consul_acl_token is defined
+
+    - block:
+        - name: delete old token-policy couple
+          uri:
+            url : "http://127.0.0.1:8500/v1/acl/destroy/{{ consul_acl_token }}"
+            method: PUT
+            headers:
+              X-Consul-Token: "{{ consul_acl_master_token }}"
+          delegate_to: "{{ groups[consul_ansible_bootstrap_group_name][0] }}"
+          when: consul_acl_token is defined
+
+        - name: create token-policy couple
+          uri:
+            url : "http://127.0.0.1:8500/v1/acl/create"
+            return_content: yes
+            method: PUT
+            headers:
+              X-Consul-Token: "{{ consul_acl_master_token }}"
+            body_format: json
+            body:
+              Name: "Node-specific policy for {{ inventory_hostname }}"
+              Type: "client"
+              Rules: "{{ consul_acl_policy|default(consul_default_acl_policy) }}"
+          delegate_to: "{{ groups[consul_ansible_bootstrap_group_name][0] }}"
+          register: agent_token_response
+
+        - set_fact:
+            consul_acl_token: "{{ agent_token_response.json.ID }}"
+          when: consul_acl_token is not defined
+
+        - file:
+            path: "{{ inventory_dir }}/host_vars/{{ inventory_hostname }}"
+            state: directory
+          delegate_to: localhost
+          become: no
+
+        - copy:
+            dest: "{{ inventory_dir }}/host_vars/{{ inventory_hostname }}/consul-acl-token.yml"
+            content : |-
+              ---
+              consul_acl_token: "{{ agent_token_response.json.ID }}"
+          delegate_to: localhost
+          become: no
+
+      when: acl_refresh
+
 
     - template:
         src: templates/config-acl.json.j2
@@ -50,3 +95,5 @@
       service:
         name: consul
         state: restarted
+
+
