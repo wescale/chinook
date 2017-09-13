@@ -10,6 +10,6 @@
   roles:
     - unbound
     - consul-agent
-    - prometheus-node
+#    - prometheus-node
 
 

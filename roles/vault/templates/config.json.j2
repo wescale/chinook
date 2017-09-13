@@ -1,0 +1,20 @@
+disable_mlock = true
+
+cluster_name = "{{ vault_cluster_name }}"
+
+backend "consul" {
+  address = "localhost:8500"
+  path = "vault"
+  token = "af2ec969-122c-56c8-8a39-30b3fb4a82f8"
+}
+
+listener "tcp" {
+ address = "{{ inventory_hostname }}.node.dc1.consul:8200"
+
+ tls_cert_file = "/etc/consul.d/tls/consul-root-node.cer"
+ tls_key_file  = "/etc/consul.d/tls/consul-node.key"
+
+ tls_client_ca_file = "/etc/consul.d/tls/consul-root.cer"
+
+# tls_require_and_verify_client_cert = "true"
+}

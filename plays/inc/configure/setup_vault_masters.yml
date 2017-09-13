@@ -1,0 +1,6 @@
+---
+- hosts: nomad-servers-bootstrap
+  become: yes
+
+  roles:
+    - vault

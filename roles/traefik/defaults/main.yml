@@ -10,7 +10,7 @@ traefik_data_dir: "/var/lib/traefik"
 traefik_config_dir: "/etc/traefik.d"
 
 traefik_user_name: "traefik"
-traefik_user_id: "802"
+traefik_user_id: "810"
 
 traefik_network_interface: eth0
 

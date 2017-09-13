@@ -44,7 +44,7 @@
             headers:
               X-Consul-Token: "{{ consul_acl_master_token }}"
           delegate_to: "{{ groups[consul_ansible_bootstrap_group_name][0] }}"
-          when: consul_acl_token is defined
+          when: consul_acl_token is defined and acl_refresh
 
         - name: create token-policy couple
           uri:

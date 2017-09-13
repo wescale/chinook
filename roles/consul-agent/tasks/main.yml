@@ -1,7 +1,6 @@
 ---
 - assert:
     that:
-      - dns_internal_domain is defined and dns_internal_domain|length > 0
       - consul_ansible_bootstrap_group_name is defined and consul_ansible_bootstrap_group_name|length > 0
     msg: "dns_internal_domain var should defined for traefik exposure"
 

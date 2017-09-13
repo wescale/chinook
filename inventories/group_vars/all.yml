@@ -1,11 +1,11 @@
 ---
 project_name: "CHINOOK"
 
-project_region: "eu-west-1"
+my_project_region: "eu-west-1"
 
 ansible_user: admin
 
-secrets_dir: "{{ inventory_dir }}/../secrets/{{ project_name|lower }}-{{ project_region }}"
+secrets_dir: "{{ inventory_dir }}/../secrets/{{ project_name|lower }}-{{ my_project_region }}"
 
 dns_public_domain: chinook.aws.wescale.fr
 
@@ -20,6 +20,16 @@ graylog_udp_destination: >-
 consul_ansible_bootstrap_group_name: "consul-servers-bootstrap"
 
 consul_acl_policy: >-
-  agent "{{ inventory_hostname }}" { policy = "read" }
+  agent "" { policy = "write" }
   node "{{ inventory_hostname }}" { policy = "write" }
   node "" { policy = "read" }
+  key "" { policy = "write" }
+  service "" { policy = "write" }
+
+
+#  agent "{{ inventory_hostname }}" { policy = "write" }
+#  agent "" { policy = "read" }
+#  node "{{ inventory_hostname }}" { policy = "write" }
+#  node "" { policy = "read" }
+#  key "" { policy = "read" }
+#  service "" { policy = "write" }

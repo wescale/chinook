@@ -3,7 +3,7 @@
 {% if consul_mode|default('agent') == 'server' %}
   "acl_master_token": "{{ consul_acl_master_token }}",
 {% endif %}
-{% if consul_acl_agent_token is defined %}
+{% if consul_acl_token is defined %}
   "acl_token": "{{ consul_acl_token }}",
 {% endif %}
   "acl_down_policy": "extend-cache",
