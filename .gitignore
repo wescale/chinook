@@ -17,3 +17,4 @@ plays/graylog-server-salt
 backup
 *.creds
 *.log
+target

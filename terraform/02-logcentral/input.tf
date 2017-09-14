@@ -5,7 +5,14 @@ variable "project_region" {}
 
 variable "public_key_path" {}
 
-variable "masters_number" {}
+variable "logstore_number" {}
+variable "logstore_instance_type" {
+  default = "m4.xlarge"
+}
+
+variable "terrabot_all_layers_dir" {}
+
+variable "deployment" {}
 
 # =============================================================================
 
@@ -18,14 +25,14 @@ provider "aws" {
 data "terraform_remote_state" "landscape" {
   backend = "local"
   config {
-    path = "${path.module}/../01-landscape/terraform.tfstate"
+    path = "${var.terrabot_all_layers_dir}/01-landscape/${var.deployment}.tfstate"
   }
 }
 
 data "terraform_remote_state" "rights" {
   backend = "local"
   config {
-    path = "${path.module}/../00-access-rights/terraform.tfstate"
+    path = "${var.terrabot_all_layers_dir}/00-access-rights/${var.deployment}.tfstate"
   }
 }
 

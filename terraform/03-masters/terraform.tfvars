@@ -1,1 +1,0 @@
-masters_number = 3

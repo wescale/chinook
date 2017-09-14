@@ -1,26 +1,15 @@
 # =============================================================================
 
 variable "project_name" {}
-
 variable "project_region" {}
 
 variable "public_key_path" {}
 
-variable "route53_zone_id" {}
+variable "workers_number" {}
 
-variable "route53_zone_domain" {}
+variable "terrabot_all_layers_dir" {}
 
-variable "route53_internal_zone_id" {}
-
-variable "route53_internal_zone_domain" {}
-
-variable "entry_instance_type" {
-  default = "t2.small"
-}
-
-variable "entry_instance_count" {
-  default = "1"
-}
+variable "deployment" {}
 
 # =============================================================================
 
@@ -30,19 +19,24 @@ provider "aws" {
 
 # =============================================================================
 
+data "terraform_remote_state" "masters" {
+  backend = "local"
+  config {
+    path = "${var.terrabot_all_layers_dir}/03-masters/${var.deployment}.tfstate"
+  }
+}
+
 data "terraform_remote_state" "landscape" {
   backend = "local"
-
   config {
-    path = "${path.module}/../01-landscape/terraform.tfstate"
+    path = "${var.terrabot_all_layers_dir}/01-landscape/${var.deployment}.tfstate"
   }
 }
 
 data "terraform_remote_state" "rights" {
   backend = "local"
-
   config {
-    path = "${path.module}/../00-access-rights/terraform.tfstate"
+    path = "${var.terrabot_all_layers_dir}/00-access-rights/${var.deployment}.tfstate"
   }
 }
 
