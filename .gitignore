@@ -18,3 +18,4 @@ backup
 *.creds
 *.log
 target
+all.terrabot.yml
