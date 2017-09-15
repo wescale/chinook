@@ -1,3 +1,4 @@
 ---
 default_local_private_key_file: "/Users/amaury/.ssh/id_rsa.kouignamann"
+default_local_public_key_file: "{{ default_local_private_key_file }}.pub"
 

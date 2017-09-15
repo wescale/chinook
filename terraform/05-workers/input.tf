@@ -22,7 +22,7 @@ provider "aws" {
 data "terraform_remote_state" "masters" {
   backend = "local"
   config {
-    path = "${var.terrabot_all_layers_dir}/03-masters/${var.deployment}.tfstate"
+    path = "${var.terrabot_all_layers_dir}/04-masters/${var.deployment}.tfstate"
   }
 }
 

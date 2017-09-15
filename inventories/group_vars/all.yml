@@ -7,8 +7,9 @@ ansible_user: admin
 
 secrets_dir: "{{ inventory_dir }}/../secrets/{{ project_name|lower }}-{{ my_project_region }}"
 
+dns_public_zone_id: "Z3SI64X4SFQ59L"
+dns_internal_zone_id: "{{ dns_public_zone_id }}"
 dns_public_domain: chinook.aws.wescale.fr
-
 dns_internal_domain: chinook-mon.aws.wescale.fr
 
 graylog_input_syslogudp_port: 5001

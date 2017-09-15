@@ -15,3 +15,15 @@ private_subnet_cidr_c: "10.42.130.0/24"
 masters_number: 3
 
 workers_number: 1
+
+logstore_number: 1
+
+monitor_default_public_key: "{{ lookup('file', default_local_public_key_file) }}"
+
+monitor_number: 1
+
+route53_zone_id: "{{ dns_public_zone_id }}"
+route53_zone_domain: "{{ dns_public_domain }}"
+
+route53_internal_zone_id: "{{ dns_internal_zone_id }}"
+route53_internal_zone_domain: "{{ dns_internal_domain }}"
