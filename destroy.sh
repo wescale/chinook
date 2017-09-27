@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
-for step in logstore 04-workers 03-masters 021-monitor 020-entry-points 01-landscape; do
-    ansible-playbook plays/undeploy-tf-layer.yml -e auto_apply=true -e layer_name=$step -vvv
+for step in 06-entry-points 05-workers 04-masters 03-monitor 02-logcentral 01-landscape; do
+    ansible-playbook \
+    ../terrabot/terrabot.yml \
+    -e tflayer=$step \
+    -e deployment=prod-eu-west-1 \
+    -e tfaction=destroy
 done

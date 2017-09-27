@@ -24,11 +24,11 @@
 
 - name: "{{ tflayer }} - generating ansible host inventory"
   template:
-    src: "{{ inventory_dir }}/../plays/templates/terraform_layer_inventory.j2"
-    dest: "{{ inventory_dir }}/{{ clean_tflayer }}.inventory"
+    src: "{{ pwd }}/plays/templates/terraform_layer_inventory.j2"
+    dest: "{{ pwd }}/inventories/{{ clean_tflayer }}.inventory"
 
 - name: "{{ tflayer }} - generating ssh project configuration"
   template:
-    src: "{{ inventory_dir }}/../plays/templates/ssh.cfg.j2"
-    dest: "{{ inventory_dir }}/../ssh.cfg"
+    src: "{{ pwd }}/plays/templates/ssh.cfg.j2"
+    dest: "{{ pwd }}/ssh.cfg"
   when: tfoutput_cidr_to_tfoutput_bastion is defined

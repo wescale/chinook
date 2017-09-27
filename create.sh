@@ -2,8 +2,14 @@
 
 echo "$(date) - start deploy infra" > run.log
 
-for step in 01-landscape 020-entry-points 021-monitor 03-masters 04-workers logstore; do
-    ansible-playbook plays/deploy-tf-layer.yml -e auto_apply=true -e layer_name=$step -vvv
+for step in 01-landscape 02-logcentral 03-monitor 04-masters 05-workers 06-entry-points; do
+    ansible-playbook \
+    ../terrabot/terrabot.yml \
+    -e tflayer=$step \
+    -e deployment=prod-eu-west-1 \
+    -e tfaction=apply \
+    -e auto_apply=true \
+    -e teardown_tasks=$(pwd)/plays/generate_tf_layer_inventory.yml
 done
 
 echo "$(date) - end deploy infra" >> run.log

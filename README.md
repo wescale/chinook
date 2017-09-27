@@ -52,3 +52,7 @@ switch to new environment :
     Fake data generation due to malicious messages
     Tampering causing state corruption
     Denial of Service against a node
+
+regen certificates of host : delete node cer and csr locally and rerun consul-agent
+
+https://github.com/libopenstorage/openstorage

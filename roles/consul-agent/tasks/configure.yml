@@ -32,6 +32,9 @@
     src: "{{ consul_local_tls_dir }}/consul-root.cer"
     dest: "{{ consul_config_dir }}/tls/consul-root.cer"
 
+- name: suppress old csr if needed
+
+
 - name: create node cert signing
   shell: >-
     openssl req
