@@ -19,3 +19,5 @@ backup
 *.log
 target
 all.terrabot.yml
+roles/consul-role
+blog-secrets

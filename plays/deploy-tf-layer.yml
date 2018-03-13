@@ -13,7 +13,7 @@
   tasks:
     - name: "{{ layer_name }} - terraform plan"
       shell: >-
-        terraform init
+        terraform init -get=true
         &&
         terraform plan {{ common_tf_vars }} -lock=false
       args:

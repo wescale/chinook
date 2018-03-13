@@ -1,0 +1,11 @@
+[servers]
+bastions_0 ansible_host=34.250.10.64
+bastions_1 ansible_host=52.211.110.51
+bastions_2 ansible_host=52.48.11.190
+logstores_0 ansible_host=10.42.110.156
+monitor_0 ansible_host=10.42.110.137
+
+[masters]
+masters_0 ansible_host=10.42.110.244
+masters_1 ansible_host=10.42.120.214
+masters_2 ansible_host=10.42.130.48

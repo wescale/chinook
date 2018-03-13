@@ -18,7 +18,7 @@ graylog_udp_destination: >-
   @{{ hostvars[groups['logstores'][0]].ansible_default_ipv4.address }}:{{ graylog_input_syslogudp_port}};RSYSLOG_SyslogProtocol23Format
 
 
-consul_ansible_bootstrap_group_name: "consul-servers-bootstrap"
+consul_ansible_master_group_name: "consul-servers-bootstrap"
 
 consul_acl_policy: >-
   agent "" { policy = "write" }
@@ -27,7 +27,7 @@ consul_acl_policy: >-
   key "" { policy = "write" }
   service "" { policy = "write" }
 
-
+consul_dc_name: "dc1"
 #  agent "{{ inventory_hostname }}" { policy = "write" }
 #  agent "" { policy = "read" }
 #  node "{{ inventory_hostname }}" { policy = "write" }

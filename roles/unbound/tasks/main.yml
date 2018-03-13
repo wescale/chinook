@@ -14,6 +14,11 @@
     line: "nameserver 127.0.0.1"
     insertbefore: "^nameserver .*$"
 
+- shell:
+    cat /etc/resolv.conf | grep nameserver | grep -v 127.0.0.1 | cut -d " " -f2
+  changed_when: no
+  register: default_nameserver_raw
+
 - lineinfile:
     path: /etc/dhcp/dhclient.conf
     regexp: >-

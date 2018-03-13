@@ -1,8 +1,8 @@
 ---
 nomad_server_cache_dir: "/var/cache/run"
 
-nomad_server_version: "0.6.0"
-nomad_server_archive_sum: "fcf108046164cfeda84eab1c3047e36ad59d239b66e6b2f013e6c93064bc6313"
+nomad_server_version: "0.7.0"
+nomad_server_archive_sum: "b3b78dccbdbd54ddc7a5ffdad29bce2d745cac93ea9e45f94e078f57b756f511"
 
 nomad_server_url_prefix: "https://releases.hashicorp.com/nomad/{{ nomad_server_version }}"
 nomad_server_archive_name: "nomad_{{ nomad_server_version }}_linux_amd64.zip"

@@ -1,3 +1,6 @@
 ---
 - src: aurelienmaury.seed
   name: seed
+
+- src: https://github.com/WeScale/consul-role
+  version: "master"

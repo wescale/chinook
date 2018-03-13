@@ -32,7 +32,6 @@
     src: "{{ consul_local_tls_dir }}/consul-root.cer"
     dest: "{{ consul_config_dir }}/tls/consul-root.cer"
 
-- name: suppress old csr if needed
 
 
 - name: create node cert signing
@@ -75,7 +74,6 @@
     owner: root
     group: "{{ consul_user_name }}"
     mode: 0640
-    validate: consul validate %s
   notify: restart consul
 
 - name: generate default variables

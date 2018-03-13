@@ -12,12 +12,10 @@ resource "aws_instance" "entry_instance" {
   iam_instance_profile = "${data.terraform_remote_state.rights.masters_profile}"
   ebs_optimized        = false
 
-  count = "${var.entry_instance_count}"
-
   subnet_id = "${
     element(
       data.terraform_remote_state.landscape.private_subnet_list,
-      count.index % length(data.terraform_remote_state.landscape.private_subnet_list)
+      1 % length(data.terraform_remote_state.landscape.private_subnet_list)
     )
   }"
 
@@ -103,12 +101,10 @@ resource "aws_instance" "monitor_entry_instance" {
   iam_instance_profile = "${data.terraform_remote_state.rights.masters_profile}"
   ebs_optimized        = false
 
-  count = "${var.entry_instance_count}"
-
   subnet_id = "${
     element(
     data.terraform_remote_state.landscape.private_subnet_list,
-    count.index % length(data.terraform_remote_state.landscape.private_subnet_list)
+    1 % length(data.terraform_remote_state.landscape.private_subnet_list)
     )
 }"
 

@@ -13,7 +13,7 @@
   tasks:
     - name: "{{ layer_name }} - terraform destroy"
       shell: >-
-        terraform init
+        terraform init -get=true
         &&
         terraform destroy {{ common_tf_vars }} -force -lock=false
       args:

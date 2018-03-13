@@ -7,7 +7,7 @@ output "entry_public" {
 }
 
 output "entry_mon_instance" {
-  value = ["${aws_instance.monitor_entry_instance.private_ip}"]
+  value = ["${aws_instance.monitor_entry_instance.*.private_ip}"]
 }
 
 output "entry_mon_public" {

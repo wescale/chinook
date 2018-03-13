@@ -11,6 +11,9 @@ server:
 
  verbosity: 1
 
+ # for Docker container
+ access-control: 172.17.0.0/16 allow_snoop
+
  hide-identity: yes
  hide-version: yes
  harden-glue: yes
@@ -20,3 +23,10 @@ server:
 stub-zone:
   name: "{{ consul_dc_name }}.consul"
   stub-addr: "127.0.0.1@8600"
+
+{% for private_zone in unbound_private_zones %}
+stub-zone:
+  name: "{{ private_zone }}"
+  stub-addr: "{{ default_nameserver_raw.stdout }}"
+{% endfor %}
+

@@ -9,7 +9,7 @@
 
   roles:
     - unbound
-    - consul-agent
+    - consul-role
 #    - prometheus-node
 
 

@@ -1,6 +1,6 @@
 ---
-vault_version: "0.8.2"
-vault_archive_sum: "b7050bbc0b9ad554dd03040d1e5ad9c3b0cafde7e781f65433e4db5d05882245"
+vault_version: "0.8.3"
+vault_archive_sum: "a3b687904cd1151e7c7b1a3d016c93177b33f4f9ce5254e1d4f060fca2ac2626"
 
 vault_url_prefix: "https://releases.hashicorp.com/vault/{{ vault_version }}"
 vault_archive_name: "vault_{{ vault_version }}_linux_amd64.zip"

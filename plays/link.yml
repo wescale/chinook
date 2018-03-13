@@ -1,0 +1,43 @@
+---
+- hosts: workers
+  become: yes
+  tags: link
+
+  tasks:
+    - shell: iptables -t nat -F
+
+    - service:
+        name: docker
+        state: stopped
+
+    - iptables:
+        table: nat
+        chain: PREROUTING
+        protocol: "{{ item }}"
+        match: "{{ item }}"
+        in_interface: docker0
+        destination: 172.17.0.1
+        destination_port: 53
+        jump: DNAT
+        to_destination: 127.0.0.1
+        comment: un
+      with_items:
+        - tcp
+        - udp
+
+    - iptables:
+        table: filter
+        chain: INPUT
+        protocol: "{{ item }}"
+        match: "{{ item }}"
+        in_interface: docker0
+        destination: 127.0.0.1
+        destination_port: 53
+        jump: ACCEPT
+      with_items:
+        - tcp
+        - udp
+
+    - service:
+        name: docker
+        state: started
