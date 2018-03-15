@@ -7,5 +7,6 @@ statsd_exporter_archive_url: "{{ statsd_exporter_release_url }}/v{{ statsd_expor
 
 statsd_exporter_archive_sum:
   0.4.0: "320da5b244af3f505cb28f130ea5f3137e24bb8af9c1ddfed797a89174065347"
+  0.6.0: "8ac4013400026ed143aaddc495d19a2d6290f45bc8fdc85ad9970d3e45adaeb2"
 
 statsd_exporter_user: "statsd_exporter"

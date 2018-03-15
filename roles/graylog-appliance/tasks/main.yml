@@ -19,7 +19,7 @@
 
 - name: add graylog project repository
   apt:
-    deb: "https://packages.graylog2.org/repo/packages/graylog-2.3-repository_latest.deb"
+    deb: "https://packages.graylog2.org/repo/packages/graylog-2.4-repository_latest.deb"
 
 - apt:
     name: "{{ item }}"

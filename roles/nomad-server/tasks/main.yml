@@ -29,6 +29,12 @@
     gid: "{{ nomad_server_user_id }}"
     system: yes
 
+- name: docker group is created
+  group:
+    name: "docker"
+# ---
+#  when: worker
+
 - name: create system user
   user:
     name: "{{ nomad_server_user_name }}"
